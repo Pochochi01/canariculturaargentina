@@ -1,2 +1,11 @@
+# Dependencias
 node_modules
+
+# Variables de entorno (nunca subir al repo)
 .env
+.env.production
+.env.local
+.env.*.local
+
+# Build del frontend
+frontend/dist
