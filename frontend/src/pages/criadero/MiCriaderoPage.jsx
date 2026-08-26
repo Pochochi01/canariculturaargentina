@@ -520,7 +520,9 @@ function ParejaModal({ open, onClose, initial, loading, onSave, machos, hembras 
                   <SelectItem value="__none__">Seleccionar...</SelectItem>
                   {machos.map(m => (
                     <SelectItem key={m._id} value={m._id}>
-                      {m.numAnillo}{m.nombreNomenclador ? ` — ${m.nombreNomenclador}` : ''}
+                      {m.numAnillo}
+                      {m.procedencia ? ` (${m.procedencia})` : ''}
+                      {m.nombreNomenclador ? ` — ${m.nombreNomenclador}` : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -534,7 +536,9 @@ function ParejaModal({ open, onClose, initial, loading, onSave, machos, hembras 
                   <SelectItem value="__none__">Seleccionar...</SelectItem>
                   {hembras.map(h => (
                     <SelectItem key={h._id} value={h._id}>
-                      {h.numAnillo}{h.nombreNomenclador ? ` — ${h.nombreNomenclador}` : ''}
+                      {h.numAnillo}
+                      {h.procedencia ? ` (${h.procedencia})` : ''}
+                      {h.nombreNomenclador ? ` — ${h.nombreNomenclador}` : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -1250,6 +1254,18 @@ function ParejasTab() {
   const machos = ejemplares.filter(e => e.sexo === 'macho');
   const hembras = ejemplares.filter(e => e.sexo === 'hembra');
 
+  // IDs de hembras que ya forman parte de alguna pareja activa
+  const hembrasParejadasIds = new Set(
+    parejas.map(p => String(p.hembraId?._id || p.hembraId)).filter(Boolean)
+  );
+
+  // Al crear: excluye las ya emparejadas. Al editar: permite la hembra actual de esa pareja.
+  const hembrasDisponibles = hembras.filter(h => {
+    const hId = String(h._id);
+    if (editing && String(editing.hembraId) === hId) return true;
+    return !hembrasParejadasIds.has(hId);
+  });
+
   const saveMutation = useMutation({
     mutationFn: (data) => editing?._id ? updatePareja(editing._id, data) : createPareja(data),
     onSuccess: () => {
@@ -1288,16 +1304,20 @@ function ParejasTab() {
       {error && <p className="text-sm text-red-500">{error}</p>}
 
       <div className="flex justify-end">
-        <Button onClick={openNew} disabled={machos.length === 0 || hembras.length === 0}>
+        <Button onClick={openNew} disabled={machos.length === 0 || hembrasDisponibles.length === 0}>
           <Plus className="h-4 w-4 mr-1" /> Nueva Pareja
         </Button>
       </div>
 
-      {(machos.length === 0 || hembras.length === 0) && (
+      {machos.length === 0 || hembras.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-4">
           Necesitás al menos un macho y una hembra registrados para armar parejas.
         </p>
-      )}
+      ) : hembrasDisponibles.length === 0 ? (
+        <p className="text-sm text-muted-foreground text-center py-4">
+          Todas las hembras ya forman parte de una pareja activa.
+        </p>
+      ) : null}
 
       {parejas.length === 0 ? (
         <Card>
@@ -1358,7 +1378,7 @@ function ParejasTab() {
         loading={saveMutation.isPending}
         onSave={(data) => saveMutation.mutate(data)}
         machos={machos}
-        hembras={hembras}
+        hembras={hembrasDisponibles}
       />
 
       <ConfirmDialog

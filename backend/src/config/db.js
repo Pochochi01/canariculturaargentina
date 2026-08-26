@@ -29,6 +29,10 @@ const ensureCollections = async () => {
  * socios:
  *  - { anilloCriador }              : unicidad global reemplazada por { anilloCriador, sociedadId }
  *  - { dni }                        : unicidad global reemplazada por { dni, sociedadId }
+ *
+ * ejemplares:
+ *  - { socioId, numAnillo }         : reemplazado por unicidad global { numAnillo, temporadaAnillado, procedencia }
+ *                                     para permitir el mismo n° de anillo con distinto criador
  */
 const OBSOLETE_INDEXES = [
   {
@@ -46,6 +50,10 @@ const OBSOLETE_INDEXES = [
   {
     coleccion: 'socios',
     matcher: (key) => key.dni === 1 && !key.sociedadId
+  },
+  {
+    coleccion: 'ejemplares',
+    matcher: (key) => key.socioId === 1 && key.numAnillo === 1 && !key.temporadaAnillado && !key.procedencia
   },
 ];
 

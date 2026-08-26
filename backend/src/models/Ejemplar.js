@@ -26,10 +26,8 @@ const EjemplarSchema = new mongoose.Schema({
   activo: { type: Boolean, default: true }
 }, { timestamps: true });
 
-// Un socio no puede tener dos veces el mismo anillo
-EjemplarSchema.index({ socioId: 1, numAnillo: 1 }, { unique: true });
-
 // La combinación anillo + temporada + procedencia debe ser única globalmente
+// (permite que un socio tenga el mismo n° de anillo si la procedencia es distinta)
 EjemplarSchema.index(
   { numAnillo: 1, temporadaAnillado: 1, procedencia: 1 },
   {
