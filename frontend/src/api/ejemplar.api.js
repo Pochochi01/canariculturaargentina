@@ -14,3 +14,9 @@ export const updateEjemplar = (id, data) =>
 
 export const deleteEjemplar = (id) =>
   axiosClient.delete(`/ejemplares/${id}`).then(r => r.data);
+
+export const buscarCriadorPorProcedencia = (codigo) =>
+  axiosClient.get(`/ejemplares/procedencia/${encodeURIComponent(codigo)}`).then(r => r.data);
+
+export const verificarDuplicadoEjemplar = (params) =>
+  axiosClient.get('/ejemplares/verificar', { params }).then(r => r.data);

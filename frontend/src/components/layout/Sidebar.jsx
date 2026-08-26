@@ -2,7 +2,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 import {
-  LayoutDashboard, Building2, Users, Gavel, Tag, Trophy, LogOut, Bird, Menu, X, BookOpen, Settings, FileSpreadsheet
+  LayoutDashboard, Building2, Users, Gavel, Tag, Trophy, LogOut, Bird, Menu, X, BookOpen, Settings, FileSpreadsheet, ShieldCheck
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -82,6 +82,7 @@ export default function Sidebar({ onClose }) {
 
         {hasRole('admin_general') && (
           <NavSection title="Administración">
+            <NavItem to="/admin/admins-sociedad" icon={ShieldCheck} label="Admins. Sociedad" onClick={onClose} />
             <NavItem to="/sociedades" icon={Building2} label="Sociedades" onClick={onClose} />
             <NavItem to="/jueces" icon={Gavel} label="Jueces" onClick={onClose} />
             <NavItem to="/nomencladores/csv-to-pdf" icon={FileSpreadsheet} label="CSV → PDF" onClick={onClose} />

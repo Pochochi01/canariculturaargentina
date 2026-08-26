@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import NotificacionBell from './NotificacionBell';
 import { Menu } from 'lucide-react';
 
 export default function AppShell() {
@@ -9,7 +10,7 @@ export default function AppShell() {
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex md:w-64 md:flex-shrink-0 flex-col">
+      <aside className="hidden md:flex md:w-64 md:shrink-0 flex-col">
         <Sidebar />
       </aside>
 
@@ -25,15 +26,20 @@ export default function AppShell() {
 
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Mobile topbar */}
-        <header className="flex h-16 items-center border-b bg-white px-4 md:hidden">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-slate-100"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <span className="ml-3 font-semibold text-slate-800">Canaricultura</span>
+        {/* Topbar — mobile: hamburger + título; desktop: solo campana */}
+        <header className="flex h-14 items-center justify-between border-b bg-white px-4 shrink-0">
+          <div className="flex items-center gap-3 md:hidden">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <span className="font-semibold text-slate-800">Canaricultura</span>
+          </div>
+          {/* Spacer para desktop */}
+          <div className="hidden md:block" />
+          <NotificacionBell />
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6">

@@ -24,6 +24,8 @@ const publicidadRoutes               = require('./routes/publicidad.routes');
 const revistaRoutes                  = require('./routes/revista.routes');
 const nomencladorCompetenciaRoutes   = require('./routes/nomencladorCompetencia.routes');
 const csvToPdfRoutes                 = require('./routes/csvToPdf.routes');
+const adminSociedadRoutes            = require('./routes/adminSociedad.routes');
+const notificacionRoutes             = require('./routes/notificacion.routes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -75,6 +77,8 @@ app.use('/api/publicidades',              publicidadRoutes);
 app.use('/api/revistas',                 revistaRoutes);
 app.use('/api/nomenclador-competencia',  nomencladorCompetenciaRoutes);
 app.use('/api/csv-to-pdf',              csvToPdfRoutes);
+app.use('/api/admin-sociedad',          adminSociedadRoutes);
+app.use('/api/notificaciones',          notificacionRoutes);
 app.use('/revistas',             express.static(path.join(__dirname, '../uploads/revistas')));
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', timestamp: new Date() }));

@@ -12,6 +12,13 @@ const HuevoSchema = new mongoose.Schema({
   parejaNodrizaId: { type: mongoose.Schema.Types.ObjectId, ref: 'Pareja', default: null },
   // Ejemplar nacido de este huevo (solo si eclosionado y anillado)
   ejemplarId: { type: mongoose.Schema.Types.ObjectId, ref: 'Ejemplar', default: null },
+  // Estado del pichón nacido
+  estadoPichon: {
+    type: String,
+    enum: ['pendiente_anillar', 'anillado', 'destetado', 'muerto'],
+    default: null
+  },
+  fechaEclosion: { type: Date, default: null },
 }, { _id: true });
 
 const PuestaSchema = new mongoose.Schema({

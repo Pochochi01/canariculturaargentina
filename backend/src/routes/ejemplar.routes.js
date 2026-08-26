@@ -6,6 +6,8 @@ router.use(authenticate);
 router.use(authorize('socio'));
 
 router.get('/', ctrl.getAll);
+router.get('/verificar', ctrl.verificarDuplicado);
+router.get('/procedencia/:codigo', ctrl.buscarPorProcedencia);
 router.get('/:id', ctrl.getById);
 router.post('/', ctrl.create);
 router.put('/:id', ctrl.update);

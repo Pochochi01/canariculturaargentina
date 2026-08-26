@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getEjemplares, createEjemplar, updateEjemplar, deleteEjemplar } from '@/api/ejemplar.api';
+import { getEjemplares, createEjemplar, updateEjemplar, deleteEjemplar, buscarCriadorPorProcedencia, verificarDuplicadoEjemplar } from '@/api/ejemplar.api';
 import { getParejas, createPareja, updatePareja, deletePareja } from '@/api/pareja.api';
 import { getPuestasByPareja, getDescendientesByPareja, createPuesta, updatePuesta, deletePuesta, setHuevosPuesta, updateHuevo } from '@/api/puesta.api';
 import { getColores, getFormas, getCanto } from '@/api/nomenclador.api';
+import { getMiPerfil } from '@/api/socio.api';
 import PageHeader from '@/components/shared/PageHeader';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import { Card, CardContent } from '@/components/ui/card';
@@ -53,11 +54,25 @@ const ESTADO_COLORS = {
   otro: 'bg-slate-100 text-slate-600',
 };
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 const EMPTY_EJEMPLAR = {
   numAnillo: '', sexo: 'desconocido', tipoCanario: '',
   codigoNomenclador: '', nombreNomenclador: '',
+  temporadaAnillado: CURRENT_YEAR,
+  procedencia: '',
+  procedenciaTipo: 'propio',
+  procedenciaApellido: '',
+  procedenciaNombre: '',
   fechaNacimiento: '', fechaAnillado: '',
   estado: 'disponible', jaula: '', observaciones: '',
+};
+
+const normStr = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const matchAND = (texto, query) => {
+  if (!query.trim()) return true;
+  const h = normStr(texto);
+  return query.trim().split(/\s+/).every(p => h.includes(normStr(p)));
 };
 
 const EMPTY_PAREJA = {
@@ -68,26 +83,65 @@ const EMPTY_PAREJA = {
 
 // ─── Ejemplar form modal ──────────────────────────────────────────────────────
 
-function EjemplarModal({ open, onClose, initial, loading, onSave }) {
+const TEMPORADAS = Array.from({ length: 8 }, (_, i) => CURRENT_YEAR - i);
+
+function EjemplarModal({ open, onClose, initial, loading, onSave, serverError }) {
   const [form, setForm] = useState(initial || EMPTY_EJEMPLAR);
+  const [busquedaNomen, setBusquedaNomen] = useState('');
+  const [criadorCargando, setCriadorCargando] = useState(false);
+  const [criadorEncontrado, setCriadorEncontrado] = useState(false);
+  const [criadorNoEncontrado, setCriadorNoEncontrado] = useState(false);
+  const [duplicadoWarning, setDuplicadoWarning] = useState('');
+  const [verificando, setVerificando] = useState(false);
 
-  useEffect(() => {
-    if (open) setForm(initial || EMPTY_EJEMPLAR);
-  }, [open, initial]);
-
+  const { data: miPerfil } = useQuery({ queryKey: ['mi-perfil'], queryFn: getMiPerfil });
   const { data: colores = [] } = useQuery({ queryKey: ['colores'], queryFn: () => getColores({ activo: true }) });
   const { data: formas = [] } = useQuery({ queryKey: ['formas'], queryFn: () => getFormas({ activo: true }) });
   const { data: canto = [] } = useQuery({ queryKey: ['canto'], queryFn: () => getCanto({ activo: true }) });
+
+  // Reset form when modal opens
+  useEffect(() => {
+    if (!open) return;
+    const base = initial || EMPTY_EJEMPLAR;
+    setForm(base);
+    setBusquedaNomen('');
+    setCriadorNoEncontrado(false);
+    setDuplicadoWarning('');
+    setCriadorEncontrado(
+      base.procedenciaTipo === 'adquirido' && !!(base.procedenciaApellido || base.procedenciaNombre)
+    );
+  }, [open, initial]);
+
+  // Auto-fill propio procedencia when profile loads (new exemplar)
+  useEffect(() => {
+    if (!open || !miPerfil) return;
+    setForm(p => {
+      if (p.procedenciaTipo === 'propio' && !p.procedencia) {
+        return {
+          ...p,
+          procedencia: miPerfil.anilloCriador || '',
+          procedenciaApellido: miPerfil.apellido || '',
+          procedenciaNombre: miPerfil.nombre || '',
+        };
+      }
+      return p;
+    });
+  }, [open, miPerfil]);
 
   const nomencladores = form.tipoCanario === 'color' ? colores
     : form.tipoCanario === 'forma' ? formas
     : form.tipoCanario === 'canto' ? canto
     : [];
 
+  const nomencladoresFiltrados = busquedaNomen.trim()
+    ? nomencladores.filter(n => matchAND(`${n.codigo} ${n.nombre || n.nombreLinea || ''}`, busquedaNomen))
+    : nomencladores;
+
   const set = (key, val) => setForm(p => ({ ...p, [key]: val }));
 
-  const handleTipoChange = (tipo) => {
+  const handleTipoCanarioChange = (tipo) => {
     setForm(p => ({ ...p, tipoCanario: tipo, codigoNomenclador: '', nombreNomenclador: '' }));
+    setBusquedaNomen('');
   };
 
   const handleNomencladorChange = (codigo) => {
@@ -96,12 +150,82 @@ function EjemplarModal({ open, onClose, initial, loading, onSave }) {
       ? (nomen?.nombreLinea || '')
       : (nomen?.nombre || nomen?.nombreLinea || '');
     setForm(p => ({ ...p, codigoNomenclador: codigo, nombreNomenclador: nombre }));
+    setBusquedaNomen('');
+  };
+
+  const handleTipoProcedencia = (tipo) => {
+    if (tipo === 'propio') {
+      setForm(p => ({
+        ...p,
+        procedenciaTipo: 'propio',
+        procedencia: miPerfil?.anilloCriador || '',
+        procedenciaApellido: miPerfil?.apellido || '',
+        procedenciaNombre: miPerfil?.nombre || '',
+      }));
+    } else {
+      setForm(p => ({
+        ...p,
+        procedenciaTipo: 'adquirido',
+        procedencia: '',
+        procedenciaApellido: '',
+        procedenciaNombre: '',
+      }));
+    }
+    setCriadorEncontrado(false);
+    setCriadorNoEncontrado(false);
+    setDuplicadoWarning('');
+  };
+
+  const checkDuplicado = async (anillo, temporada, proc) => {
+    if (!anillo || !temporada || !proc) { setDuplicadoWarning(''); return; }
+    setVerificando(true);
+    try {
+      const { existe } = await verificarDuplicadoEjemplar({
+        numAnillo: anillo,
+        temporadaAnillado: Number(temporada),
+        procedencia: proc.toUpperCase().replace(/\s/g, ''),
+        ...(initial?._id ? { excludeId: initial._id } : {}),
+      });
+      setDuplicadoWarning(existe
+        ? `Ya existe un ejemplar con anillo "${anillo}", temporada ${temporada} y procedencia ${proc}.`
+        : ''
+      );
+    } catch {
+      setDuplicadoWarning('');
+    } finally {
+      setVerificando(false);
+    }
+  };
+
+  const buscarCriador = async () => {
+    const codigo = (form.procedencia || '').trim();
+    if (!codigo) return;
+    setCriadorCargando(true);
+    setCriadorEncontrado(false);
+    setCriadorNoEncontrado(false);
+    try {
+      const criador = await buscarCriadorPorProcedencia(codigo);
+      setForm(p => ({ ...p, procedenciaApellido: criador.apellido || '', procedenciaNombre: criador.nombre || '' }));
+      setCriadorEncontrado(true);
+    } catch {
+      setForm(p => ({ ...p, procedenciaApellido: '', procedenciaNombre: '' }));
+      setCriadorNoEncontrado(true);
+    } finally {
+      setCriadorCargando(false);
+    }
+    // Verificar duplicado una vez conocida la procedencia
+    if (form.numAnillo && form.temporadaAnillado) {
+      await checkDuplicado(form.numAnillo, form.temporadaAnillado, codigo);
+    }
   };
 
   const handleSubmit = () => {
     if (!form.numAnillo || !form.tipoCanario || !form.sexo) return;
     onSave(form);
   };
+
+  const showNombreApellido = form.procedenciaTipo === 'adquirido' && (criadorEncontrado || criadorNoEncontrado);
+  const nombreApellidoDisabled = criadorEncontrado && !criadorNoEncontrado;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -110,11 +234,52 @@ function EjemplarModal({ open, onClose, initial, loading, onSave }) {
           <DialogTitle>{initial?._id ? 'Editar Ejemplar' : 'Nuevo Ejemplar'}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-2">
+
+          {/* Temporada + Anillo */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label>N° Anillo *</Label>
-              <Input value={form.numAnillo} onChange={e => set('numAnillo', e.target.value)} placeholder="Ej: AR-2024-001" required />
+              <Label>Temporada de Anillado *</Label>
+              <Select
+                value={String(form.temporadaAnillado || CURRENT_YEAR)}
+                onValueChange={v => { set('temporadaAnillado', Number(v)); setDuplicadoWarning(''); }}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {TEMPORADAS.map(y => (
+                    <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
+            <div className="space-y-1.5">
+              <Label>N° Anillo *</Label>
+              <Input
+                value={form.numAnillo}
+                onChange={e => { set('numAnillo', e.target.value); setDuplicadoWarning(''); }}
+                onBlur={e => {
+                  const padded = e.target.value ? e.target.value.padStart(4, '0') : '';
+                  if (padded !== e.target.value) set('numAnillo', padded);
+                  if (padded && form.procedencia) checkDuplicado(padded, form.temporadaAnillado, form.procedencia);
+                }}
+                placeholder="Ej: 1234"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Advertencia duplicado */}
+          {(duplicadoWarning || verificando) && (
+            <div className="flex items-center gap-2 rounded-md bg-amber-50 border border-amber-200 px-3 py-2 text-sm text-amber-700">
+              {verificando
+                ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+                : <AlertCircle className="h-4 w-4 shrink-0" />
+              }
+              {verificando ? 'Verificando duplicados...' : duplicadoWarning}
+            </div>
+          )}
+
+          {/* Sexo + Tipo Canario */}
+          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>Sexo *</Label>
               <Select value={form.sexo} onValueChange={v => set('sexo', v)}>
@@ -124,12 +289,9 @@ function EjemplarModal({ open, onClose, initial, loading, onSave }) {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>Tipo de Canario *</Label>
-              <Select value={form.tipoCanario || '__none__'} onValueChange={v => handleTipoChange(v === '__none__' ? '' : v)}>
+              <Select value={form.tipoCanario || '__none__'} onValueChange={v => handleTipoCanarioChange(v === '__none__' ? '' : v)}>
                 <SelectTrigger><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="__none__">Seleccionar...</SelectItem>
@@ -137,26 +299,137 @@ function EjemplarModal({ open, onClose, initial, loading, onSave }) {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-1.5">
-              <Label>Variedad</Label>
-              <Select
-                value={form.codigoNomenclador || '__none__'}
-                onValueChange={v => handleNomencladorChange(v === '__none__' ? '' : v)}
-                disabled={!form.tipoCanario || nomencladores.length === 0}
-              >
-                <SelectTrigger><SelectValue placeholder="Seleccionar..." /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__none__">Sin especificar</SelectItem>
-                  {nomencladores.map(n => (
+          </div>
+
+          {/* Procedencia */}
+          <div className="space-y-2 rounded-lg border p-3 bg-slate-50">
+            <p className="text-sm font-medium text-slate-700">Procedencia</p>
+            <div className="flex gap-6">
+              {[
+                { value: 'propio', label: 'Propio' },
+                { value: 'adquirido', label: 'Adquirido' },
+              ].map(opt => (
+                <label key={opt.value} className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="radio"
+                    name="procedenciaTipo"
+                    value={opt.value}
+                    checked={form.procedenciaTipo === opt.value}
+                    onChange={() => handleTipoProcedencia(opt.value)}
+                    className="accent-primary h-4 w-4"
+                  />
+                  <span className="text-sm font-medium">{opt.label}</span>
+                </label>
+              ))}
+            </div>
+
+            {form.procedenciaTipo === 'propio' ? (
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Número de criador</Label>
+                <Input
+                  value={form.procedencia}
+                  disabled
+                  className="font-mono bg-slate-100 text-slate-500 h-8 text-sm"
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Número único de criador</Label>
+                  <div className="relative">
+                    <Input
+                      value={form.procedencia}
+                      onChange={e => {
+                        set('procedencia', e.target.value.toUpperCase().replace(/\s/g, ''));
+                        setCriadorEncontrado(false);
+                        setCriadorNoEncontrado(false);
+                        setForm(p => ({ ...p, procedenciaApellido: '', procedenciaNombre: '' }));
+                      }}
+                      onBlur={buscarCriador}
+                      placeholder="Ej: AR001"
+                      className="font-mono h-8 text-sm pr-8"
+                    />
+                    {criadorCargando && (
+                      <Loader2 className="absolute right-2 top-2 h-4 w-4 animate-spin text-muted-foreground" />
+                    )}
+                  </div>
+                </div>
+
+                {criadorNoEncontrado && (
+                  <p className="text-xs text-amber-700 flex items-center gap-1">
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                    Criador no encontrado. Complete los datos manualmente.
+                  </p>
+                )}
+
+                {showNombreApellido && (
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Apellido</Label>
+                      <Input
+                        value={form.procedenciaApellido}
+                        onChange={e => set('procedenciaApellido', e.target.value)}
+                        disabled={nombreApellidoDisabled}
+                        placeholder="Apellido..."
+                        className={`h-8 text-sm ${nombreApellidoDisabled ? 'bg-slate-100 text-slate-500' : ''}`}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Nombre</Label>
+                      <Input
+                        value={form.procedenciaNombre}
+                        onChange={e => set('procedenciaNombre', e.target.value)}
+                        disabled={nombreApellidoDisabled}
+                        placeholder="Nombre..."
+                        className={`h-8 text-sm ${nombreApellidoDisabled ? 'bg-slate-100 text-slate-500' : ''}`}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Variedad */}
+          <div className="space-y-1.5">
+            <Label>Variedad</Label>
+            <Input
+              value={busquedaNomen}
+              onChange={e => {
+                setBusquedaNomen(e.target.value);
+                if (form.codigoNomenclador && e.target.value.trim()) {
+                  const aun = nomencladores.find(n => n.codigo === form.codigoNomenclador);
+                  if (aun && !matchAND(`${aun.codigo} ${aun.nombre || aun.nombreLinea || ''}`, e.target.value)) {
+                    setForm(p => ({ ...p, codigoNomenclador: '', nombreNomenclador: '' }));
+                  }
+                }
+              }}
+              placeholder="Buscar por código o nombre..."
+              disabled={!form.tipoCanario}
+              className="h-8 text-xs"
+            />
+            <Select
+              value={form.codigoNomenclador || '__none__'}
+              onValueChange={v => handleNomencladorChange(v === '__none__' ? '' : v)}
+              disabled={!form.tipoCanario || nomencladores.length === 0}
+            >
+              <SelectTrigger><SelectValue placeholder="Sin especificar" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">Sin especificar</SelectItem>
+                {nomencladoresFiltrados.length === 0 ? (
+                  <div className="px-3 py-4 text-xs text-muted-foreground text-center">Sin resultados</div>
+                ) : (
+                  nomencladoresFiltrados.map(n => (
                     <SelectItem key={n.codigo} value={n.codigo}>
                       {n.codigo} — {n.nombre || n.nombreLinea}
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
           </div>
 
+          {/* Fechas */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>Fecha de Nacimiento</Label>
@@ -168,6 +441,7 @@ function EjemplarModal({ open, onClose, initial, loading, onSave }) {
             </div>
           </div>
 
+          {/* Estado + Jaula */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>Estado</Label>
@@ -184,6 +458,7 @@ function EjemplarModal({ open, onClose, initial, loading, onSave }) {
             </div>
           </div>
 
+          {/* Observaciones */}
           <div className="space-y-1.5">
             <Label>Observaciones</Label>
             <textarea
@@ -194,6 +469,13 @@ function EjemplarModal({ open, onClose, initial, loading, onSave }) {
             />
           </div>
         </div>
+        {serverError && (
+          <div className="flex items-center gap-2 rounded-md bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            {serverError}
+          </div>
+        )}
+
         <DialogFooter>
           <Button variant="outline" onClick={() => onClose(false)}>Cancelar</Button>
           <Button onClick={handleSubmit} disabled={loading || !form.numAnillo || !form.tipoCanario}>
@@ -305,7 +587,6 @@ function EjemplaresTab() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
-  const [error, setError] = useState('');
 
   const { data: ejemplares = [], isLoading } = useQuery({
     queryKey: ['ejemplares'],
@@ -318,9 +599,7 @@ function EjemplaresTab() {
       queryClient.invalidateQueries({ queryKey: ['ejemplares'] });
       setModalOpen(false);
       setEditing(null);
-      setError('');
     },
-    onError: (err) => setError(err.response?.data?.error || 'Error al guardar'),
   });
 
   const deleteMutation = useMutation({
@@ -331,8 +610,8 @@ function EjemplaresTab() {
     },
   });
 
-  const openNew = () => { setEditing(null); setModalOpen(true); setError(''); };
-  const openEdit = (e) => { setEditing(e); setModalOpen(true); setError(''); };
+  const openNew = () => { setEditing(null); setModalOpen(true); saveMutation.reset(); };
+  const openEdit = (e) => { setEditing(e); setModalOpen(true); saveMutation.reset(); };
 
   const handleSave = (data) => saveMutation.mutate(data);
 
@@ -340,7 +619,6 @@ function EjemplaresTab() {
 
   return (
     <div className="space-y-3">
-      {error && <p className="text-sm text-red-500">{error}</p>}
 
       <div className="flex justify-end">
         <Button onClick={openNew}>
@@ -363,6 +641,9 @@ function EjemplaresTab() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-mono font-semibold">{e.numAnillo}</span>
+                    {e.temporadaAnillado && (
+                      <span className="text-xs bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded font-medium">{e.temporadaAnillado}</span>
+                    )}
                     <span className="text-xs capitalize bg-slate-100 px-1.5 py-0.5 rounded">{e.sexo}</span>
                     <span className="text-xs bg-slate-100 px-1.5 py-0.5 rounded capitalize">{e.tipoCanario}</span>
                     <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${ESTADO_COLORS[e.estado] || ''}`}>
@@ -376,6 +657,7 @@ function EjemplaresTab() {
                   </div>
                   <p className="text-sm text-muted-foreground mt-0.5">
                     {e.nombreNomenclador || e.codigoNomenclador || '—'}
+                    {e.procedencia && <span className="ml-2 font-mono text-xs">· {e.procedencia}</span>}
                     {e.jaula && <span className="ml-2">· Jaula: {e.jaula}</span>}
                     {e.fechaNacimiento && (
                       <span className="ml-2">· Nac: {format(new Date(e.fechaNacimiento), 'dd/MM/yyyy', { locale: es })}</span>
@@ -398,10 +680,11 @@ function EjemplaresTab() {
 
       <EjemplarModal
         open={modalOpen}
-        onClose={() => { setModalOpen(false); setEditing(null); }}
+        onClose={() => { setModalOpen(false); setEditing(null); saveMutation.reset(); }}
         initial={editing}
         loading={saveMutation.isPending}
         onSave={handleSave}
+        serverError={saveMutation.error?.response?.data?.error || ''}
       />
 
       <ConfirmDialog
@@ -549,7 +832,7 @@ function PuestasTab({ pareja, parejas }) {
               ) : (
                 <div className="flex flex-wrap gap-2">
                   {puesta.huevos.map(huevo => (
-                    <div key={huevo._id} className="border rounded-lg p-2 min-w-[140px]">
+                    <div key={huevo._id} className="border rounded-lg p-2 min-w-35">
                       <p className="text-xs font-medium mb-1">Huevo #{huevo.numero}</p>
                       <Select
                         value={huevo.estado}
@@ -660,42 +943,236 @@ function PuestasTab({ pareja, parejas }) {
 
 // ─── DescendientesTab ─────────────────────────────────────────────────────────
 
+const ESTADOS_PICHON = [
+  { value: 'pendiente_anillar', label: 'Pendiente de anillar' },
+  { value: 'anillado',          label: 'Anillado' },
+  { value: 'destetado',         label: 'Destetado' },
+  { value: 'muerto',            label: 'Muerto' },
+];
+
 function DescendientesTab({ pareja }) {
+  const queryClient = useQueryClient();
+  const { data: miPerfil } = useQuery({ queryKey: ['mi-perfil'], queryFn: getMiPerfil });
+
+  // Reutiliza el caché que ya cargó PuestasTab
+  const { data: puestas = [] } = useQuery({
+    queryKey: ['puestas', pareja._id],
+    queryFn: () => getPuestasByPareja(pareja._id),
+  });
+
   const { data: descendientes = [], isLoading } = useQuery({
     queryKey: ['descendientes', pareja._id],
     queryFn: () => getDescendientesByPareja(pareja._id),
   });
 
-  if (isLoading) return <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin" /></div>;
-
-  if (descendientes.length === 0) return (
-    <p className="text-sm text-center text-muted-foreground py-8">
-      No hay descendientes registrados para esta pareja.
-    </p>
+  // Pichones eclosionados que aún no tienen un Ejemplar asignado
+  const pendingPichones = puestas.flatMap(p =>
+    p.huevos
+      .filter(h => h.estado === 'eclosionado' && !h.ejemplarId)
+      .map(h => ({ huevo: h, puesta: p }))
   );
 
+  const [anillarTarget, setAnillarTarget] = useState(null);
+  const [anillarForm, setAnillarForm] = useState({ numAnillo: '', sexo: 'desconocido', tipoCanario: 'color' });
+  const [anillarError, setAnillarError] = useState('');
+
+  const huevoMutation = useMutation({
+    mutationFn: ({ puestaId, huevoId, data }) => updateHuevo(puestaId, huevoId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['puestas', pareja._id] });
+      queryClient.invalidateQueries({ queryKey: ['descendientes', pareja._id] });
+    },
+  });
+
+  const createAndLinkMutation = useMutation({
+    mutationFn: async ({ form, puesta, huevo }) => {
+      const numPadded = String(form.numAnillo).padStart(4, '0');
+      const ejemplar = await createEjemplar({
+        numAnillo: numPadded,
+        sexo: form.sexo,
+        tipoCanario: form.tipoCanario,
+        procedencia: miPerfil?.anilloCriador || '',
+        procedenciaTipo: 'propio',
+        procedenciaApellido: miPerfil?.apellido || '',
+        procedenciaNombre: miPerfil?.nombre || '',
+        temporadaAnillado: CURRENT_YEAR,
+        puestaId: puesta._id,
+        estado: 'disponible',
+      });
+      await updateHuevo(puesta._id, huevo._id, { estadoPichon: 'anillado', ejemplarId: ejemplar._id });
+      return ejemplar;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['puestas', pareja._id] });
+      queryClient.invalidateQueries({ queryKey: ['descendientes', pareja._id] });
+      queryClient.invalidateQueries({ queryKey: ['ejemplares'] });
+      queryClient.invalidateQueries({ queryKey: ['notificaciones'] });
+      setAnillarTarget(null);
+      setAnillarError('');
+    },
+    onError: (err) => setAnillarError(err.response?.data?.error || 'Error al registrar el ejemplar'),
+  });
+
+  const handleEstadoPichon = (puestaId, huevoId, valor) => {
+    if (valor === 'anillado') {
+      const puesta = puestas.find(p => p._id === puestaId);
+      const huevo = puesta?.huevos.find(h => h._id === huevoId);
+      setAnillarTarget({ huevo, puesta });
+      setAnillarForm({ numAnillo: '', sexo: 'desconocido', tipoCanario: 'color' });
+      setAnillarError('');
+    } else {
+      huevoMutation.mutate({ puestaId, huevoId, data: { estadoPichon: valor } });
+    }
+  };
+
+  if (isLoading) return <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin" /></div>;
+
+  const isEmpty = pendingPichones.length === 0 && descendientes.length === 0;
+
   return (
-    <div className="space-y-2">
-      {descendientes.map(e => (
-        <Card key={e._id}>
-          <CardContent className="flex items-center gap-3 p-3">
-            <Bird className="h-4 w-4 text-slate-400 shrink-0" />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-mono font-semibold text-sm">{e.numAnillo}</span>
-                <span className="text-xs capitalize bg-slate-100 px-1.5 py-0.5 rounded">{e.sexo}</span>
-                <span className={`text-xs px-1.5 py-0.5 rounded ${ESTADO_COLORS[e.estado] || ''}`}>
-                  {ESTADOS.find(s => s.value === e.estado)?.label || e.estado}
-                </span>
+    <div className="space-y-3">
+      {isEmpty && (
+        <p className="text-sm text-center text-muted-foreground py-8">
+          No hay descendientes registrados para esta pareja.
+        </p>
+      )}
+
+      {/* Pichones eclosionados pendientes de anillar */}
+      {pendingPichones.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 px-1">Pichones nacidos</p>
+          {pendingPichones.map(({ huevo, puesta }) => {
+            const dias = diasDesde(huevo.fechaEclosion);
+            const alertaAnillar = dias !== null && dias >= DIAS_ANILLADO;
+            const isResuelto = huevo.estadoPichon === 'destetado' || huevo.estadoPichon === 'muerto';
+            return (
+              <Card key={huevo._id} className={isResuelto ? 'opacity-60' : ''}>
+                <CardContent className="flex items-center gap-3 p-3">
+                  <Egg className={`h-4 w-4 shrink-0 ${isResuelto ? 'text-slate-300' : 'text-green-500'}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-800">
+                      Pichón — Puesta {puesta.numPuesta} · Huevo #{huevo.numero}
+                    </p>
+                    {huevo.fechaEclosion && (
+                      <p className="text-xs text-muted-foreground">
+                        Eclosionó: {format(new Date(huevo.fechaEclosion), 'dd/MM/yyyy', { locale: es })}
+                        {dias !== null && <span className="ml-1">({dias} días)</span>}
+                        {alertaAnillar && !isResuelto && (
+                          <span className="ml-2 text-blue-600 font-medium flex-inline items-center gap-0.5">
+                            · ¡Anillar ya!
+                          </span>
+                        )}
+                      </p>
+                    )}
+                  </div>
+                  <Select
+                    value={huevo.estadoPichon || 'pendiente_anillar'}
+                    onValueChange={v => handleEstadoPichon(puesta._id, huevo._id, v)}
+                    disabled={huevoMutation.isPending}
+                  >
+                    <SelectTrigger className="w-44 h-8 text-xs shrink-0">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ESTADOS_PICHON.map(e => (
+                        <SelectItem key={e.value} value={e.value}>{e.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Descendientes ya anillados */}
+      {descendientes.length > 0 && (
+        <div className="space-y-2">
+          {pendingPichones.length > 0 && (
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 px-1">Anillados</p>
+          )}
+          {descendientes.map(e => (
+            <Card key={e._id}>
+              <CardContent className="flex items-center gap-3 p-3">
+                <Bird className="h-4 w-4 text-slate-400 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-mono font-semibold text-sm">{e.numAnillo}</span>
+                    <span className="text-xs capitalize bg-slate-100 px-1.5 py-0.5 rounded">{e.sexo}</span>
+                    <span className={`text-xs px-1.5 py-0.5 rounded ${ESTADO_COLORS[e.estado] || ''}`}>
+                      {ESTADOS.find(s => s.value === e.estado)?.label || e.estado}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {e.nombreNomenclador || e.codigoNomenclador || '—'}
+                    {e.fechaNacimiento && (
+                      <span className="ml-2">· Nac: {format(new Date(e.fechaNacimiento), 'dd/MM/yyyy', { locale: es })}</span>
+                    )}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Modal para anillar pichón */}
+      <Dialog open={!!anillarTarget} onOpenChange={() => { setAnillarTarget(null); setAnillarError(''); }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader><DialogTitle>Anillar Pichón</DialogTitle></DialogHeader>
+          <div className="space-y-3 py-2">
+            {anillarError && (
+              <div className="flex items-center gap-2 rounded-md bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                {anillarError}
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {e.nombreNomenclador || e.codigoNomenclador || '—'}
-                {e.fechaNacimiento && <span className="ml-2">· Nac: {format(new Date(e.fechaNacimiento), 'dd/MM/yyyy', { locale: es })}</span>}
-              </p>
+            )}
+            <div className="space-y-1.5">
+              <Label>N° Anillo *</Label>
+              <Input
+                value={anillarForm.numAnillo}
+                onChange={e => setAnillarForm(p => ({ ...p, numAnillo: e.target.value }))}
+                onBlur={e => {
+                  const padded = e.target.value ? e.target.value.padStart(4, '0') : '';
+                  if (padded !== e.target.value) setAnillarForm(p => ({ ...p, numAnillo: padded }));
+                }}
+                placeholder="Ej: 0025"
+              />
             </div>
-          </CardContent>
-        </Card>
-      ))}
+            <div className="space-y-1.5">
+              <Label>Sexo</Label>
+              <Select value={anillarForm.sexo} onValueChange={v => setAnillarForm(p => ({ ...p, sexo: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {SEXOS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Tipo de Canario</Label>
+              <Select value={anillarForm.tipoCanario} onValueChange={v => setAnillarForm(p => ({ ...p, tipoCanario: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {TIPOS.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setAnillarTarget(null); setAnillarError(''); }}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => createAndLinkMutation.mutate({ form: anillarForm, puesta: anillarTarget.puesta, huevo: anillarTarget.huevo })}
+              disabled={!anillarForm.numAnillo || createAndLinkMutation.isPending}
+            >
+              {createAndLinkMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Registrar y anillar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
