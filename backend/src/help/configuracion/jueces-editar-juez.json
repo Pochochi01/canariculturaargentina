@@ -1,0 +1,50 @@
+{
+  "id": "jueces-editar-juez",
+  "titulo": "Cómo editar un juez",
+  "descripcion": "Editar juez desde la pantalla «Juez».",
+  "categoria": "configuracion",
+  "modulo": "jueces",
+  "tipo": "editar",
+  "rutas": [
+    "/jueces/:id/editar"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "PUT /api/jueces/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "juez",
+    "jueces",
+    "codigo",
+    "dni",
+    "apellido",
+    "nombre",
+    "federacion",
+    "tipo"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Jueces» y abra la opción correspondiente.",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: Código (obligatorio), DNI (obligatorio), Apellido (obligatorio), Nombre (obligatorio), Federación, Tipo de Juez.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Juez no encontrado"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "jueces-desactivar-juez",
+    "jueces-nuevo-juez"
+  ]
+}

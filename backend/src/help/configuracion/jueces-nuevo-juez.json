@@ -1,0 +1,48 @@
+{
+  "id": "jueces-nuevo-juez",
+  "titulo": "Cómo crear un juez",
+  "descripcion": "Crear juez desde la pantalla «Juez».",
+  "categoria": "configuracion",
+  "modulo": "jueces",
+  "tipo": "crear",
+  "rutas": [
+    "/jueces/nuevo"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "POST /api/jueces"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "juez",
+    "jueces",
+    "codigo",
+    "dni",
+    "apellido",
+    "nombre",
+    "federacion",
+    "tipo"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Jueces» y abra la opción correspondiente.",
+    "Presione el botón «Nuevo juez» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Código (obligatorio), DNI (obligatorio), Apellido (obligatorio), Nombre (obligatorio), Federación, Tipo de Juez.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "jueces-desactivar-juez",
+    "jueces-editar-juez"
+  ]
+}

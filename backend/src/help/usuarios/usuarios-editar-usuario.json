@@ -1,0 +1,55 @@
+{
+  "id": "usuarios-editar-usuario",
+  "titulo": "Cómo editar un usuario",
+  "descripcion": "Editar usuario desde la pantalla «Usuarios».",
+  "categoria": "usuarios",
+  "modulo": "usuarios",
+  "tipo": "editar",
+  "rutas": [
+    "/admin/usuarios"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "PUT /api/usuarios/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "usuario",
+    "usuarios",
+    "dni",
+    "sociedad",
+    "asignada",
+    "roles",
+    "asignados",
+    "activo"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Usuarios».",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: DNI / Usuario, Sociedad asignada, Roles asignados, Usuario activo.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Usuario no encontrado",
+    "Ya existe un usuario con ese DNI",
+    "Debe asignar al menos un rol"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "El dato ya está registrado: busque el registro existente y edítelo en lugar de crear uno nuevo.",
+    "Complete todos los campos marcados con * antes de guardar."
+  ],
+  "relacionados": [
+    "usuarios-nuevo-usuario",
+    "usuarios-editar-administrador",
+    "usuarios-nuevo-administrador-de-sociedad"
+  ]
+}

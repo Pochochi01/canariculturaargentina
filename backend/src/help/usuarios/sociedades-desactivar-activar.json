@@ -1,0 +1,45 @@
+{
+  "id": "sociedades-desactivar-activar",
+  "titulo": "Cómo desactivar una sociedad",
+  "descripcion": "Desactivar sociedad desde la pantalla «Sociedades».",
+  "categoria": "usuarios",
+  "modulo": "sociedades",
+  "tipo": "desactivar",
+  "rutas": [
+    "/sociedades"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "PATCH /api/sociedades/:id/toggle-activa"
+  ],
+  "keywords": [
+    "desactivar",
+    "baja",
+    "inactivo",
+    "activar",
+    "sociedad",
+    "sociedades"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Sociedades».",
+    "Ubique el registro y presione el botón de desactivar."
+  ],
+  "erroresFrecuentes": [
+    "Sociedad no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "sociedades-eliminar-sociedad-definitivamente",
+    "sociedades-asignar-admin",
+    "sociedades-nuevo-sociedad",
+    "sociedades-editar-sociedad",
+    "sociedades-asignar-administrador"
+  ]
+}

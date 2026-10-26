@@ -1,0 +1,46 @@
+{
+  "id": "sociedades-eliminar-sociedad-definitivamente",
+  "titulo": "Cómo eliminar una sociedad",
+  "descripcion": "Eliminar sociedad desde la pantalla «Sociedades».",
+  "categoria": "usuarios",
+  "modulo": "sociedades",
+  "tipo": "eliminar",
+  "rutas": [
+    "/sociedades"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "DELETE /api/sociedades/:id"
+  ],
+  "keywords": [
+    "eliminar",
+    "borrar",
+    "quitar",
+    "sociedad",
+    "definitivamente",
+    "sociedades"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Sociedades».",
+    "Ubique el registro y presione el botón de eliminar (ícono de papelera).",
+    "Confirme la operación en el aviso «¿Eliminar sociedad definitivamente?»."
+  ],
+  "erroresFrecuentes": [
+    "Sociedad no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "sociedades-asignar-admin",
+    "sociedades-desactivar-activar",
+    "sociedades-nuevo-sociedad",
+    "sociedades-editar-sociedad",
+    "sociedades-asignar-administrador"
+  ]
+}

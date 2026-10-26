@@ -1,0 +1,53 @@
+{
+  "id": "gestion-editar-movimiento",
+  "titulo": "Cómo editar un movimiento",
+  "descripcion": "Editar movimiento desde la pantalla «Pago».",
+  "categoria": "gestion",
+  "modulo": "gestion",
+  "tipo": "editar",
+  "rutas": [
+    "/gestion"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "PUT /api/gestion/movimientos/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "movimiento",
+    "gestion",
+    "tipo",
+    "concepto",
+    "monto",
+    "fecha"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Pago».",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: Tipo, Concepto, Monto ($), Fecha.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Movimiento no encontrado"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "gestion-registrar-pago",
+    "gestion-nuevo-movimiento",
+    "gestion-filtros-y-exportar",
+    "gestion-tarifas-de-cuotas",
+    "gestion-descargar-recibo"
+  ]
+}

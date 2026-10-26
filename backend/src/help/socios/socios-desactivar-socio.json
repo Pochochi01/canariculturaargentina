@@ -1,0 +1,45 @@
+{
+  "id": "socios-desactivar-socio",
+  "titulo": "Cómo desactivar un socio",
+  "descripcion": "Desactivar socio desde la pantalla «Socios».",
+  "categoria": "socios",
+  "modulo": "socios",
+  "tipo": "desactivar",
+  "rutas": [
+    "/socios"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "DELETE /api/socios/:id"
+  ],
+  "keywords": [
+    "desactivar",
+    "baja",
+    "inactivo",
+    "socio",
+    "socios"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Socios».",
+    "Ubique el registro y presione el botón de desactivar.",
+    "Confirme la operación en el aviso «¿Desactivar socio?»."
+  ],
+  "erroresFrecuentes": [
+    "Socio no encontrado",
+    "Sin acceso a este socio"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "socios-nuevo-socio",
+    "socios-editar-socio"
+  ]
+}

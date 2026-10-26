@@ -1,0 +1,43 @@
+{
+  "id": "sociedades-asignar-admin",
+  "titulo": "Cómo usar «Asignar admin»",
+  "descripcion": "Realizar la operación «Asignar admin» desde la pantalla «Sociedades».",
+  "categoria": "usuarios",
+  "modulo": "sociedades",
+  "tipo": "accion",
+  "rutas": [
+    "/sociedades"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "POST /api/sociedades/:id/admin"
+  ],
+  "keywords": [
+    "asignar",
+    "admin",
+    "administrador",
+    "sociedades"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Sociedades».",
+    "Presione el botón «Asignar admin»."
+  ],
+  "erroresFrecuentes": [
+    "Sociedad no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "sociedades-eliminar-sociedad-definitivamente",
+    "sociedades-desactivar-activar",
+    "sociedades-nuevo-sociedad",
+    "sociedades-editar-sociedad",
+    "sociedades-asignar-administrador"
+  ]
+}

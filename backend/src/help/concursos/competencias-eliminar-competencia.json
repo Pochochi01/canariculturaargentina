@@ -1,0 +1,50 @@
+{
+  "id": "competencias-eliminar-competencia",
+  "titulo": "Cómo eliminar una competencia",
+  "descripcion": "Eliminar competencia desde la pantalla «Competencias».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "eliminar",
+  "rutas": [
+    "/competencias"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "DELETE /api/competencias/:id"
+  ],
+  "keywords": [
+    "eliminar",
+    "borrar",
+    "quitar",
+    "competencia",
+    "competencias"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias».",
+    "Ubique el registro y presione el botón de eliminar (ícono de papelera).",
+    "Confirme la operación en el aviso «¿Eliminar competencia?»."
+  ],
+  "erroresFrecuentes": [
+    "Competencia no encontrada",
+    "No tiene permisos para realizar esta acción"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "Su rol no permite esta operación. Si cree que debería tenerla, solicítela al Administrador General."
+  ],
+  "relacionados": [
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-eliminar-inscripcion",
+    "competencias-cerrar-inscripcion"
+  ]
+}

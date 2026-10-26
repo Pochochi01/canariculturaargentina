@@ -1,0 +1,37 @@
+{
+  "id": "nomencladores-descargar-pdf",
+  "titulo": "Cómo usar «Descargar PDF»",
+  "descripcion": "Descargar la operación «Descargar PDF» desde la pantalla «Convertir CSV a PDF».",
+  "categoria": "reportes",
+  "modulo": "nomencladores",
+  "tipo": "reporte",
+  "rutas": [
+    "/nomencladores/csv-to-pdf"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [],
+  "keywords": [
+    "reporte",
+    "imprimir",
+    "pdf",
+    "descargar",
+    "nomenclador",
+    "nomencladores"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › CSV → PDF».",
+    "Presione el botón «Descargar PDF»."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "nomencladores-editar",
+    "nomencladores-nuevo",
+    "nomencladores-eliminar-nomenclador"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "competencias-cerrar-inscripcion",
+  "titulo": "Cómo usar «Cerrar inscripción»",
+  "descripcion": "Realizar la operación «Cerrar inscripción» desde la pantalla «Competencia».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "accion",
+  "rutas": [
+    "/competencias/:id"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad",
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "POST /api/competencias/:id/cerrar-inscripcion"
+  ],
+  "keywords": [
+    "cerrar",
+    "inscripcion",
+    "competencias"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias» y abra la opción correspondiente.",
+    "Presione el botón «Cerrar inscripción».",
+    "Confirme la operación en el aviso «¿Cerrar inscripción?»."
+  ],
+  "erroresFrecuentes": [
+    "Competencia no encontrada",
+    "No tiene permisos para realizar esta acción",
+    "La competencia ya fue juzgada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "Su rol no permite esta operación. Si cree que debería tenerla, solicítela al Administrador General."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-eliminar-inscripcion"
+  ]
+}

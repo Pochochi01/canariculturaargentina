@@ -1,0 +1,56 @@
+{
+  "id": "usuarios-nuevo-administrador-de-sociedad",
+  "titulo": "Cómo crear un administrador",
+  "descripcion": "Crear administrador desde la pantalla «Administradores de Sociedad».",
+  "categoria": "usuarios",
+  "modulo": "usuarios",
+  "tipo": "crear",
+  "rutas": [
+    "/admin/admins-sociedad"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "POST /api/admin-sociedad"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "administrador",
+    "sociedad",
+    "usuarios",
+    "dni",
+    "usuario",
+    "asignada",
+    "roles",
+    "asignados",
+    "activo"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Admins. Sociedad».",
+    "Presione el botón «Nuevo administrador de sociedad» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: DNI / Usuario, Sociedad asignada, Roles asignados, Usuario activo.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "DNI y contraseña son requeridos",
+    "El usuario ya es administrador de sociedad"
+  ],
+  "soluciones": [
+    "Complete todos los campos marcados con * antes de guardar.",
+    "El dato ya está registrado: busque el registro existente y edítelo en lugar de crear uno nuevo."
+  ],
+  "relacionados": [
+    "usuarios-editar-usuario",
+    "usuarios-nuevo-usuario",
+    "usuarios-editar-administrador"
+  ]
+}

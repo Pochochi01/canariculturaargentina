@@ -1,0 +1,47 @@
+{
+  "id": "nomencladores-nuevo",
+  "titulo": "Cómo crear un nomenclador",
+  "descripcion": "Crear nomenclador desde la pantalla «Nomenclador de Colores».",
+  "categoria": "configuracion",
+  "modulo": "nomencladores",
+  "tipo": "crear",
+  "rutas": [
+    "/nomencladores/colores",
+    "/nomencladores/formas",
+    "/nomencladores/canto"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "nomenclador",
+    "nomencladores",
+    "codigo",
+    "unico",
+    "nombre",
+    "linea"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Nomenclador de Colores».",
+    "Presione el botón «Nuevo» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Código único (obligatorio), Nombre de línea (obligatorio).",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "nomencladores-editar",
+    "nomencladores-eliminar-nomenclador",
+    "nomencladores-descargar-pdf"
+  ]
+}

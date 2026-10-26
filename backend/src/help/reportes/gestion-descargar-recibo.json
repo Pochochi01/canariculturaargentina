@@ -1,0 +1,44 @@
+{
+  "id": "gestion-descargar-recibo",
+  "titulo": "Cómo usar «Descargar recibo»",
+  "descripcion": "Descargar la operación «Descargar recibo» desde la pantalla «Pago».",
+  "categoria": "reportes",
+  "modulo": "gestion",
+  "tipo": "reporte",
+  "rutas": [
+    "/gestion"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "GET /api/gestion/pdf/recibo/:pagoId"
+  ],
+  "keywords": [
+    "reporte",
+    "imprimir",
+    "pdf",
+    "descargar",
+    "recibo",
+    "pago",
+    "gestion"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Pago».",
+    "Presione el botón «Descargar recibo»."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "gestion-registrar-pago",
+    "gestion-editar-movimiento",
+    "gestion-nuevo-movimiento",
+    "gestion-filtros-y-exportar",
+    "gestion-tarifas-de-cuotas"
+  ]
+}

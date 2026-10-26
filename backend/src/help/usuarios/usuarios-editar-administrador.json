@@ -1,0 +1,52 @@
+{
+  "id": "usuarios-editar-administrador",
+  "titulo": "Cómo editar un administrador",
+  "descripcion": "Editar administrador desde la pantalla «Administradores de Sociedad».",
+  "categoria": "usuarios",
+  "modulo": "usuarios",
+  "tipo": "editar",
+  "rutas": [
+    "/admin/admins-sociedad"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "PUT /api/admin-sociedad/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "administrador",
+    "usuarios",
+    "dni",
+    "usuario",
+    "sociedad",
+    "asignada",
+    "roles",
+    "asignados",
+    "activo"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Admins. Sociedad».",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: DNI / Usuario, Sociedad asignada, Roles asignados, Usuario activo.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Administrador no encontrado"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "usuarios-editar-usuario",
+    "usuarios-nuevo-usuario",
+    "usuarios-nuevo-administrador-de-sociedad"
+  ]
+}

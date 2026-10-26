@@ -1,0 +1,45 @@
+{
+  "id": "nomencladores-editar",
+  "titulo": "Cómo editar un nomenclador",
+  "descripcion": "Editar nomenclador desde la pantalla «Nomenclador de Colores».",
+  "categoria": "configuracion",
+  "modulo": "nomencladores",
+  "tipo": "editar",
+  "rutas": [
+    "/nomencladores/colores",
+    "/nomencladores/formas",
+    "/nomencladores/canto"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "nomenclador",
+    "nomencladores",
+    "codigo",
+    "unico",
+    "nombre",
+    "linea"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Nomenclador de Colores».",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: Código único (obligatorio), Nombre de línea (obligatorio).",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "nomencladores-nuevo",
+    "nomencladores-eliminar-nomenclador",
+    "nomencladores-descargar-pdf"
+  ]
+}

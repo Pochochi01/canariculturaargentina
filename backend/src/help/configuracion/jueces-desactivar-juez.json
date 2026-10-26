@@ -1,0 +1,42 @@
+{
+  "id": "jueces-desactivar-juez",
+  "titulo": "Cómo desactivar un juez",
+  "descripcion": "Desactivar juez desde la pantalla «Jueces».",
+  "categoria": "configuracion",
+  "modulo": "jueces",
+  "tipo": "desactivar",
+  "rutas": [
+    "/jueces"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "DELETE /api/jueces/:id"
+  ],
+  "keywords": [
+    "desactivar",
+    "baja",
+    "inactivo",
+    "juez",
+    "jueces"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Jueces».",
+    "Ubique el registro y presione el botón de desactivar.",
+    "Confirme la operación en el aviso «¿Desactivar juez?»."
+  ],
+  "erroresFrecuentes": [
+    "Juez no encontrado"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "jueces-nuevo-juez",
+    "jueces-editar-juez"
+  ]
+}

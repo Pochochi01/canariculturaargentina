@@ -1,0 +1,49 @@
+{
+  "id": "competencias-eliminar-inscripcion",
+  "titulo": "Cómo eliminar una inscripción",
+  "descripcion": "Eliminar inscripción desde la pantalla «Competencia».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "eliminar",
+  "rutas": [
+    "/competencias/:id"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad",
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "DELETE /api/inscripciones/:id"
+  ],
+  "keywords": [
+    "eliminar",
+    "borrar",
+    "quitar",
+    "inscripcion",
+    "competencias"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias» y abra la opción correspondiente.",
+    "Ubique el registro y presione el botón de eliminar (ícono de papelera).",
+    "Confirme la operación en el aviso «¿Eliminar inscripción?»."
+  ],
+  "erroresFrecuentes": [
+    "Inscripción no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-cerrar-inscripcion"
+  ]
+}

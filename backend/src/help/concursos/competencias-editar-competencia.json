@@ -1,0 +1,56 @@
+{
+  "id": "competencias-editar-competencia",
+  "titulo": "Cómo editar una competencia",
+  "descripcion": "Editar competencia desde la pantalla «Competencia».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "editar",
+  "rutas": [
+    "/competencias/:id/editar"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "PUT /api/competencias/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "competencia",
+    "competencias",
+    "nombre",
+    "descripcion",
+    "fecha",
+    "lugar"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias» y abra la opción correspondiente.",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: Nombre (obligatorio), Descripción, Fecha, Lugar.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Competencia no encontrada",
+    "No tiene permisos para realizar esta acción"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "Su rol no permite esta operación. Si cree que debería tenerla, solicítela al Administrador General."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-eliminar-inscripcion"
+  ]
+}

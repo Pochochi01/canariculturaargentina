@@ -1,0 +1,60 @@
+{
+  "id": "criadero-nueva-pareja",
+  "titulo": "Cómo crear una pareja",
+  "descripcion": "Crear pareja desde la pantalla «Mi Criadero».",
+  "categoria": "criaderos",
+  "modulo": "criadero",
+  "tipo": "crear",
+  "rutas": [
+    "/mi-criadero"
+  ],
+  "rolesPermitidos": [
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "socio"
+  ],
+  "permisos": [
+    "POST /api/parejas"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "nueva",
+    "pareja",
+    "criadero",
+    "macho",
+    "hembra",
+    "fecha",
+    "emparejamiento",
+    "jaula",
+    "trabajo",
+    "puesta",
+    "nido",
+    "comentarios"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Mi Criadero».",
+    "Presione el botón «Nueva Pareja» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Macho (obligatorio), Hembra (obligatorio), Fecha de Emparejamiento, N° Jaula de Trabajo, Fecha de Puesta de Nido, Comentarios.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Socio no encontrado"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "criadero-editar-ejemplar",
+    "criadero-nuevo-ejemplar",
+    "criadero-editar-pareja",
+    "criadero-nueva-puesta",
+    "criadero-anillar-pichon",
+    "criadero-eliminar-ejemplar"
+  ]
+}

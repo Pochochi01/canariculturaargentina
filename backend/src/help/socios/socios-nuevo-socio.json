@@ -1,0 +1,64 @@
+{
+  "id": "socios-nuevo-socio",
+  "titulo": "Cómo crear un socio",
+  "descripcion": "Crear socio desde la pantalla «Socio».",
+  "categoria": "socios",
+  "modulo": "socios",
+  "tipo": "crear",
+  "rutas": [
+    "/socios/nuevo"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "POST /api/socios"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "socio",
+    "socios",
+    "anillo",
+    "criador",
+    "dni",
+    "apellido",
+    "nombre",
+    "telefono",
+    "correo",
+    "electronico",
+    "domicilio",
+    "direccion",
+    "sociedad",
+    "usuario",
+    "acceso",
+    "contrasena",
+    "inicial"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Socios» y abra la opción correspondiente.",
+    "Presione el botón «Nuevo socio» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Anillo de Criador (obligatorio), DNI (obligatorio), Apellido (obligatorio), Nombre (obligatorio), Teléfono, Correo electrónico, Domicilio, Dirección, Sociedad (obligatorio), Crear usuario de acceso (DNI como contraseña inicial).",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "El Anillo de Criador no puede estar vacío.",
+    "El DNI no puede estar vacío y debe contener solo números."
+  ],
+  "soluciones": [
+    "Complete todos los campos marcados con * antes de guardar."
+  ],
+  "relacionados": [
+    "socios-desactivar-socio",
+    "socios-editar-socio"
+  ]
+}

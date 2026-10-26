@@ -1,0 +1,50 @@
+{
+  "id": "catalogo-publicar-nueva-revista",
+  "titulo": "Cómo publicar nueva revista",
+  "descripcion": "Crear revista desde la pantalla «Catálogo Digital».",
+  "categoria": "reportes",
+  "modulo": "catalogo",
+  "tipo": "crear",
+  "rutas": [
+    "/catalogo-digital"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad",
+    "socio",
+    "operador"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "POST /api/revistas/publicar/:competenciaId"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "publicar",
+    "nueva",
+    "revista",
+    "catalogo",
+    "competencia"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Catálogo Digital».",
+    "Presione el botón «Publicar nueva revista» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Competencia.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Competencia no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": []
+}

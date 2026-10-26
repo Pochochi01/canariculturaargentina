@@ -1,0 +1,58 @@
+{
+  "id": "competencias-nueva-mesa",
+  "titulo": "Cómo crear una mesa",
+  "descripcion": "Crear mesa desde la pantalla «Competencia».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "crear",
+  "rutas": [
+    "/competencias/:id/mesas"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "POST /api/mesas"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "nueva",
+    "mesa",
+    "competencias",
+    "dni",
+    "operador"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias» y abra la opción correspondiente.",
+    "Presione el botón «Nueva Mesa» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: DNI del operador (obligatorio).",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "ID de competencia requerido e inválido",
+    "El DNI del operador es obligatorio",
+    "Competencia no encontrada"
+  ],
+  "soluciones": [
+    "Complete todos los campos marcados con * antes de guardar.",
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-eliminar-inscripcion"
+  ]
+}

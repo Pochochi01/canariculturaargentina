@@ -1,0 +1,53 @@
+{
+  "id": "competencias-nuevo-competencia",
+  "titulo": "Cómo crear una competencia",
+  "descripcion": "Crear competencia desde la pantalla «Competencia».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "crear",
+  "rutas": [
+    "/competencias/nueva",
+    "/competencias/:competenciaId/inscripciones/nueva"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "POST /api/competencias"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "competencia",
+    "competencias",
+    "nombre",
+    "descripcion",
+    "fecha",
+    "lugar"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias» y abra la opción correspondiente.",
+    "Presione el botón «Nuevo competencia» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Nombre (obligatorio), Descripción, Fecha, Lugar.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-eliminar-inscripcion",
+    "competencias-cerrar-inscripcion"
+  ]
+}

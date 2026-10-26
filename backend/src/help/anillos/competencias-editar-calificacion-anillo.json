@@ -1,0 +1,63 @@
+{
+  "id": "competencias-editar-calificacion-anillo",
+  "titulo": "Cómo editar un anillo",
+  "descripcion": "Editar anillo desde la pantalla «Competencia».",
+  "categoria": "anillos",
+  "modulo": "competencias",
+  "tipo": "editar",
+  "rutas": [
+    "/competencias/:id"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad",
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad",
+    "socio"
+  ],
+  "permisos": [
+    "PUT /api/ejemplares/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "calificacion",
+    "anillo",
+    "competencias",
+    "puntaje",
+    "100",
+    "premios",
+    "uno",
+    "linea",
+    "tipo",
+    "descripcion"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias» y abra la opción correspondiente.",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: Puntaje (0-100), Premios (uno por línea: Tipo: Descripción).",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Socio no encontrado",
+    "Ya existe un ejemplar con anillo …, procedencia … y temporada ….",
+    "Ejemplar no encontrado"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "El dato ya está registrado: busque el registro existente y edítelo en lugar de crear uno nuevo."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-eliminar-inscripcion",
+    "competencias-cerrar-inscripcion"
+  ]
+}

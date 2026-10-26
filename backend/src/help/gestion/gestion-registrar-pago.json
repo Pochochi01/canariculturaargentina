@@ -1,0 +1,59 @@
+{
+  "id": "gestion-registrar-pago",
+  "titulo": "Cómo registrar pago",
+  "descripcion": "Crear pago desde la pantalla «Pago».",
+  "categoria": "gestion",
+  "modulo": "gestion",
+  "tipo": "crear",
+  "rutas": [
+    "/gestion"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "POST /api/gestion/pagos"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "pago",
+    "gestion",
+    "tipo",
+    "mes",
+    "ano",
+    "meses",
+    "cubrir",
+    "cantidad",
+    "jaulas",
+    "monto",
+    "fecha",
+    "concepto",
+    "nota",
+    "opcional"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Pago».",
+    "Presione el botón «Registrar pago» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Tipo de pago, Mes, Año, Año, Meses a cubrir, Cantidad jaulas, Monto ($), Fecha de pago, Concepto / nota (opcional).",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "gestion-editar-movimiento",
+    "gestion-nuevo-movimiento",
+    "gestion-filtros-y-exportar",
+    "gestion-tarifas-de-cuotas",
+    "gestion-descargar-recibo"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "sociedades-editar-sociedad",
+  "titulo": "Cómo editar una sociedad",
+  "descripcion": "Editar sociedad desde la pantalla «Asignar Administrador».",
+  "categoria": "usuarios",
+  "modulo": "sociedades",
+  "tipo": "editar",
+  "rutas": [
+    "/sociedades/:id/editar"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "PUT /api/sociedades/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "sociedad",
+    "sociedades",
+    "dni",
+    "administrador",
+    "contrasena",
+    "dejar",
+    "vacio",
+    "usa",
+    "clave",
+    "codigo",
+    "unico",
+    "nombre",
+    "provincia",
+    "telefono",
+    "direccion",
+    "email",
+    "federacion"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Sociedades» y abra la opción correspondiente.",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: DNI del administrador (obligatorio), Contraseña (dejar vacío usa DNI como clave), Código único (obligatorio), Nombre (obligatorio), Provincia, Teléfono, Dirección, Email, Federación.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Sociedad no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "sociedades-eliminar-sociedad-definitivamente",
+    "sociedades-asignar-admin",
+    "sociedades-desactivar-activar",
+    "sociedades-nuevo-sociedad",
+    "sociedades-asignar-administrador"
+  ]
+}

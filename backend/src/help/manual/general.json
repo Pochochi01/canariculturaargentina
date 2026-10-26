@@ -1,0 +1,27 @@
+[
+  {
+    "id": "general-seleccionar-perfil",
+    "titulo": "Cómo elegir con qué perfil ingresar",
+    "descripcion": "Si su DNI tiene más de un rol (por ejemplo Administrador de Sociedad y Criador), al iniciar sesión el sistema le pide elegir con cuál perfil trabajar.",
+    "categoria": "general",
+    "modulo": "login",
+    "tipo": "accion",
+    "rutas": ["/login"],
+    "rolesPermitidos": ["admin_general", "admin_sociedad", "socio", "operador"],
+    "rolesEjecucion": ["admin_general", "admin_sociedad", "socio", "operador"],
+    "permisos": ["POST /api/auth/login", "POST /api/auth/select-role"],
+    "keywords": ["perfil", "rol", "roles", "ingresar", "elegir", "cambiar", "sesion", "usuario"],
+    "pasos": [
+      "Ingrese su DNI y contraseña en la pantalla de inicio de sesión y presione Ingresar.",
+      "Si su cuenta tiene varios perfiles, aparece la pantalla «Seleccionar perfil».",
+      "Elija el perfil con el que desea trabajar.",
+      "Para cambiar de perfil, cierre sesión desde el menú lateral y vuelva a ingresar eligiendo el otro perfil."
+    ],
+    "erroresFrecuentes": ["Token temporal inválido o expirado", "DNI o contraseña incorrectos"],
+    "soluciones": [
+      "La selección de perfil vence a los 5 minutos: presione Volver e ingrese nuevamente.",
+      "Verifique el DNI y la contraseña. Los socios usan su DNI como contraseña inicial."
+    ],
+    "relacionados": ["login-iniciar-sesion"]
+  }
+]

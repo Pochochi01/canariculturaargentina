@@ -1,0 +1,58 @@
+{
+  "id": "criadero-nueva-puesta",
+  "titulo": "Cómo crear una puesta",
+  "descripcion": "Crear puesta desde la pantalla «Mi Criadero».",
+  "categoria": "criaderos",
+  "modulo": "criadero",
+  "tipo": "crear",
+  "rutas": [
+    "/mi-criadero"
+  ],
+  "rolesPermitidos": [
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "socio"
+  ],
+  "permisos": [
+    "POST /api/puestas"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "nueva",
+    "puesta",
+    "criadero",
+    "cantidad",
+    "huevos",
+    "fecha",
+    "inicio",
+    "incubacion",
+    "comentarios"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Mi Criadero».",
+    "Presione el botón «Nueva Puesta» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Cantidad de huevos (0–7), Fecha inicio puesta, Fecha inicio incubación, Comentarios.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Socio no encontrado",
+    "Pareja no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "criadero-editar-ejemplar",
+    "criadero-nuevo-ejemplar",
+    "criadero-editar-pareja",
+    "criadero-nueva-pareja",
+    "criadero-anillar-pichon",
+    "criadero-eliminar-ejemplar"
+  ]
+}

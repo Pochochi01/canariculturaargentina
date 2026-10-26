@@ -1,0 +1,47 @@
+{
+  "id": "gestion-tarifas-de-cuotas",
+  "titulo": "Cómo usar «Tarifas de cuotas»",
+  "descripcion": "Realizar la operación «Tarifas de cuotas» desde la pantalla «Pago».",
+  "categoria": "gestion",
+  "modulo": "gestion",
+  "tipo": "accion",
+  "rutas": [
+    "/gestion"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [],
+  "keywords": [
+    "tarifas",
+    "cuotas",
+    "pago",
+    "gestion",
+    "ano",
+    "cuota",
+    "mensual",
+    "anual",
+    "derecho",
+    "jaula"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Pago».",
+    "Presione el botón «Tarifas de cuotas».",
+    "Complete los campos: Año, Cuota mensual ($), Cuota anual ($), Derecho de jaula ($).",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "gestion-registrar-pago",
+    "gestion-editar-movimiento",
+    "gestion-nuevo-movimiento",
+    "gestion-filtros-y-exportar",
+    "gestion-descargar-recibo"
+  ]
+}

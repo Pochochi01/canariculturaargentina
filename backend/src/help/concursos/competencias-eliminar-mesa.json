@@ -1,0 +1,48 @@
+{
+  "id": "competencias-eliminar-mesa",
+  "titulo": "Cómo eliminar una mesa",
+  "descripcion": "Eliminar mesa desde la pantalla «Competencia».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "eliminar",
+  "rutas": [
+    "/competencias/:id/mesas"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "DELETE /api/mesas/:id"
+  ],
+  "keywords": [
+    "eliminar",
+    "borrar",
+    "quitar",
+    "mesa",
+    "competencias"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias» y abra la opción correspondiente.",
+    "Ubique el registro y presione el botón de eliminar (ícono de papelera).",
+    "Confirme la operación en el aviso «¿Eliminar mesa?»."
+  ],
+  "erroresFrecuentes": [
+    "Mesa no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-eliminar-inscripcion"
+  ]
+}

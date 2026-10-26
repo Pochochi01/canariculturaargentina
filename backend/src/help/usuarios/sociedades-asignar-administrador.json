@@ -1,0 +1,58 @@
+{
+  "id": "sociedades-asignar-administrador",
+  "titulo": "Cómo usar «Asignar administrador»",
+  "descripcion": "Realizar la operación «Asignar administrador» desde la pantalla «Asignar Administrador».",
+  "categoria": "usuarios",
+  "modulo": "sociedades",
+  "tipo": "accion",
+  "rutas": [
+    "/sociedades/:id/admin"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "POST /api/sociedades/:id/admin"
+  ],
+  "keywords": [
+    "asignar",
+    "administrador",
+    "sociedades",
+    "dni",
+    "contrasena",
+    "dejar",
+    "vacio",
+    "usa",
+    "clave",
+    "codigo",
+    "unico",
+    "nombre",
+    "provincia",
+    "telefono",
+    "direccion",
+    "email",
+    "federacion"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Sociedades» y abra la opción correspondiente.",
+    "Presione el botón «Asignar administrador».",
+    "Complete los campos: DNI del administrador (obligatorio), Contraseña (dejar vacío usa DNI como clave), Código único (obligatorio), Nombre (obligatorio), Provincia, Teléfono, Dirección, Email, Federación.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Sociedad no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "sociedades-eliminar-sociedad-definitivamente",
+    "sociedades-asignar-admin",
+    "sociedades-desactivar-activar",
+    "sociedades-nuevo-sociedad",
+    "sociedades-editar-sociedad"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "login-iniciar-sesion",
+  "titulo": "Cómo usar «Iniciar sesión»",
+  "descripcion": "Realizar la operación «Iniciar sesión» desde la pantalla «Login».",
+  "categoria": "general",
+  "modulo": "login",
+  "tipo": "accion",
+  "rutas": [
+    "/login"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad",
+    "socio",
+    "operador"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad",
+    "socio",
+    "operador"
+  ],
+  "permisos": [],
+  "keywords": [
+    "iniciar",
+    "sesion",
+    "login",
+    "dni",
+    "usuario",
+    "contrasena"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Login».",
+    "Presione el botón «Iniciar sesión».",
+    "Complete los campos: DNI / Usuario, Contraseña.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": []
+}

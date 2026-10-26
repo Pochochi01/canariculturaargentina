@@ -1,0 +1,39 @@
+{
+  "id": "nomencladores-eliminar-nomenclador",
+  "titulo": "Cómo eliminar un nomenclador",
+  "descripcion": "Eliminar nomenclador desde la pantalla «Nomenclador de Colores».",
+  "categoria": "configuracion",
+  "modulo": "nomencladores",
+  "tipo": "eliminar",
+  "rutas": [
+    "/nomencladores/colores",
+    "/nomencladores/formas",
+    "/nomencladores/canto"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [],
+  "keywords": [
+    "eliminar",
+    "borrar",
+    "quitar",
+    "nomenclador",
+    "nomencladores"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Nomenclador de Colores».",
+    "Ubique el registro y presione el botón de eliminar (ícono de papelera).",
+    "Confirme la operación en el aviso «¿Eliminar nomenclador?»."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "nomencladores-editar",
+    "nomencladores-nuevo",
+    "nomencladores-descargar-pdf"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "id": "sociedades-nuevo-sociedad",
+  "titulo": "Cómo crear una sociedad",
+  "descripcion": "Crear sociedad desde la pantalla «Asignar Administrador».",
+  "categoria": "usuarios",
+  "modulo": "sociedades",
+  "tipo": "crear",
+  "rutas": [
+    "/sociedades/nueva"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "POST /api/sociedades"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "sociedad",
+    "sociedades",
+    "dni",
+    "administrador",
+    "contrasena",
+    "dejar",
+    "vacio",
+    "usa",
+    "clave",
+    "codigo",
+    "unico",
+    "nombre",
+    "provincia",
+    "telefono",
+    "direccion",
+    "email",
+    "federacion"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Sociedades» y abra la opción correspondiente.",
+    "Presione el botón «Nuevo sociedad» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: DNI del administrador (obligatorio), Contraseña (dejar vacío usa DNI como clave), Código único (obligatorio), Nombre (obligatorio), Provincia, Teléfono, Dirección, Email, Federación.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "sociedades-eliminar-sociedad-definitivamente",
+    "sociedades-asignar-admin",
+    "sociedades-desactivar-activar",
+    "sociedades-editar-sociedad",
+    "sociedades-asignar-administrador"
+  ]
+}

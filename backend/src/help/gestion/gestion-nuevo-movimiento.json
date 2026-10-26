@@ -1,0 +1,51 @@
+{
+  "id": "gestion-nuevo-movimiento",
+  "titulo": "Cómo crear un movimiento",
+  "descripcion": "Crear movimiento desde la pantalla «Pago».",
+  "categoria": "gestion",
+  "modulo": "gestion",
+  "tipo": "crear",
+  "rutas": [
+    "/gestion"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "POST /api/gestion/movimientos"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "movimiento",
+    "gestion",
+    "tipo",
+    "concepto",
+    "monto",
+    "fecha"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Pago».",
+    "Presione el botón «Nuevo movimiento» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Tipo, Concepto, Monto ($), Fecha.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "gestion-registrar-pago",
+    "gestion-editar-movimiento",
+    "gestion-filtros-y-exportar",
+    "gestion-tarifas-de-cuotas",
+    "gestion-descargar-recibo"
+  ]
+}

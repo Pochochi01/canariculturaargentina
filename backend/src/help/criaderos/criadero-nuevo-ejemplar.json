@@ -1,0 +1,69 @@
+{
+  "id": "criadero-nuevo-ejemplar",
+  "titulo": "Cómo crear un ejemplar",
+  "descripcion": "Crear ejemplar desde la pantalla «Mi Criadero».",
+  "categoria": "criaderos",
+  "modulo": "criadero",
+  "tipo": "crear",
+  "rutas": [
+    "/mi-criadero"
+  ],
+  "rolesPermitidos": [
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "socio"
+  ],
+  "permisos": [
+    "POST /api/ejemplares"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "ejemplar",
+    "criadero",
+    "temporada",
+    "anillado",
+    "anillo",
+    "sexo",
+    "tipo",
+    "canario",
+    "numero",
+    "criador",
+    "unico",
+    "apellido",
+    "nombre",
+    "variedad",
+    "fecha",
+    "nacimiento",
+    "estado",
+    "jaula",
+    "observaciones"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Mi Criadero».",
+    "Presione el botón «Nuevo Ejemplar» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: Temporada de Anillado (obligatorio), N° Anillo (obligatorio), Sexo (obligatorio), Tipo de Canario (obligatorio), Número de criador, Número único de criador, Apellido, Nombre, Variedad, Fecha de Nacimiento, Fecha de Anillado, Estado, Jaula, Observaciones.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Socio no encontrado",
+    "Ya existe un ejemplar con anillo …, procedencia … y temporada …."
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "El dato ya está registrado: busque el registro existente y edítelo en lugar de crear uno nuevo."
+  ],
+  "relacionados": [
+    "criadero-editar-ejemplar",
+    "criadero-editar-pareja",
+    "criadero-nueva-pareja",
+    "criadero-nueva-puesta",
+    "criadero-anillar-pichon",
+    "criadero-eliminar-ejemplar"
+  ]
+}

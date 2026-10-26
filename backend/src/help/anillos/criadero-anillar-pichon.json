@@ -1,0 +1,57 @@
+{
+  "id": "criadero-anillar-pichon",
+  "titulo": "Cómo anillar Pichón",
+  "descripcion": "Crear anillo desde la pantalla «Mi Criadero».",
+  "categoria": "anillos",
+  "modulo": "criadero",
+  "tipo": "crear",
+  "rutas": [
+    "/mi-criadero"
+  ],
+  "rolesPermitidos": [
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "socio"
+  ],
+  "permisos": [
+    "POST /api/ejemplares"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "anillar",
+    "pichon",
+    "anillo",
+    "criadero",
+    "sexo",
+    "tipo",
+    "canario"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Mi Criadero».",
+    "Presione el botón «Anillar Pichón» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: N° Anillo (obligatorio), Sexo, Tipo de Canario.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Socio no encontrado",
+    "Ya existe un ejemplar con anillo …, procedencia … y temporada …."
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "El dato ya está registrado: busque el registro existente y edítelo en lugar de crear uno nuevo."
+  ],
+  "relacionados": [
+    "criadero-editar-ejemplar",
+    "criadero-nuevo-ejemplar",
+    "criadero-editar-pareja",
+    "criadero-nueva-pareja",
+    "criadero-nueva-puesta",
+    "criadero-eliminar-ejemplar"
+  ]
+}

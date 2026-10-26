@@ -1,0 +1,44 @@
+{
+  "id": "gestion-filtros-y-exportar",
+  "titulo": "Cómo usar «Filtros y exportar»",
+  "descripcion": "Realizar la operación «Filtros y exportar» desde la pantalla «Pago».",
+  "categoria": "reportes",
+  "modulo": "gestion",
+  "tipo": "accion",
+  "rutas": [
+    "/gestion"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [],
+  "keywords": [
+    "filtros",
+    "exportar",
+    "pago",
+    "gestion",
+    "desde",
+    "hasta",
+    "tipo"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Pago».",
+    "Presione el botón «Filtros y exportar».",
+    "Complete los campos: Desde, Hasta, Tipo.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": [
+    "gestion-registrar-pago",
+    "gestion-editar-movimiento",
+    "gestion-nuevo-movimiento",
+    "gestion-tarifas-de-cuotas",
+    "gestion-descargar-recibo"
+  ]
+}

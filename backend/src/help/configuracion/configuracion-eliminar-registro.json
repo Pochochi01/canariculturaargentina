@@ -1,0 +1,34 @@
+{
+  "id": "configuracion-eliminar-registro",
+  "titulo": "Cómo eliminar una opción",
+  "descripcion": "Eliminar opción desde la pantalla «Configurar DropDowns».",
+  "categoria": "configuracion",
+  "modulo": "configuracion",
+  "tipo": "eliminar",
+  "rutas": [
+    "/admin/dropdowns"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [],
+  "keywords": [
+    "eliminar",
+    "borrar",
+    "quitar",
+    "registro",
+    "opcion",
+    "configuracion"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Configurar DropDowns».",
+    "Ubique el registro y presione el botón de eliminar (ícono de papelera).",
+    "Confirme la operación en el aviso «¿Eliminar registro?»."
+  ],
+  "erroresFrecuentes": [],
+  "soluciones": [],
+  "relacionados": []
+}

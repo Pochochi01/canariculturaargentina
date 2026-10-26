@@ -1,0 +1,51 @@
+{
+  "id": "jura-clic-para-asignar-jueces-a-este-lote",
+  "titulo": "Cómo usar «Clic para asignar jueces a este lote»",
+  "descripcion": "Realizar la operación «Clic para asignar jueces a este lote» desde la pantalla «Mesa».",
+  "categoria": "concursos",
+  "modulo": "jura",
+  "tipo": "accion",
+  "rutas": [
+    "/mesas/:mesaId/jura"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad",
+    "operador"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad",
+    "operador"
+  ],
+  "permisos": [
+    "PUT /api/mesas/:id/lote-estado"
+  ],
+  "keywords": [
+    "clic",
+    "asignar",
+    "jueces",
+    "este",
+    "lote",
+    "mesa",
+    "jura"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Mesa».",
+    "Presione el botón «Clic para asignar jueces a este lote»."
+  ],
+  "erroresFrecuentes": [
+    "loteKey y estado (abierto|cerrado|jurado) son requeridos",
+    "Mesa no encontrada",
+    "No tiene acceso a esta mesa",
+    "Un lote jurado no puede cambiar de estado",
+    "El operador solo puede cambiar lotes que están abiertos",
+    "Solo el administrador puede reabrir un lote",
+    "No se puede cambiar directamente de \"…\" a \"…\". Primero reabrir el lote."
+  ],
+  "soluciones": [
+    "Complete todos los campos marcados con * antes de guardar.",
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": []
+}

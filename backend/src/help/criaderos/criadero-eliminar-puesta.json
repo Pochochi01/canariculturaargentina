@@ -1,0 +1,47 @@
+{
+  "id": "criadero-eliminar-puesta",
+  "titulo": "Cómo eliminar una puesta",
+  "descripcion": "Eliminar puesta desde la pantalla «Mi Criadero».",
+  "categoria": "criaderos",
+  "modulo": "criadero",
+  "tipo": "eliminar",
+  "rutas": [
+    "/mi-criadero"
+  ],
+  "rolesPermitidos": [
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "socio"
+  ],
+  "permisos": [
+    "DELETE /api/puestas/:id"
+  ],
+  "keywords": [
+    "eliminar",
+    "borrar",
+    "quitar",
+    "puesta",
+    "criadero"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Mi Criadero».",
+    "Ubique el registro y presione el botón de eliminar (ícono de papelera).",
+    "Confirme la operación en el aviso «¿Eliminar puesta?»."
+  ],
+  "erroresFrecuentes": [
+    "Socio no encontrado",
+    "Puesta no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "criadero-editar-ejemplar",
+    "criadero-nuevo-ejemplar",
+    "criadero-editar-pareja",
+    "criadero-nueva-pareja",
+    "criadero-nueva-puesta",
+    "criadero-anillar-pichon"
+  ]
+}

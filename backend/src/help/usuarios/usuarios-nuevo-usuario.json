@@ -1,0 +1,56 @@
+{
+  "id": "usuarios-nuevo-usuario",
+  "titulo": "Cómo crear un usuario",
+  "descripcion": "Crear usuario desde la pantalla «Usuarios».",
+  "categoria": "usuarios",
+  "modulo": "usuarios",
+  "tipo": "crear",
+  "rutas": [
+    "/admin/usuarios"
+  ],
+  "rolesPermitidos": [
+    "admin_general"
+  ],
+  "rolesEjecucion": [
+    "admin_general"
+  ],
+  "permisos": [
+    "POST /api/usuarios"
+  ],
+  "keywords": [
+    "crear",
+    "alta",
+    "nuevo",
+    "cargar",
+    "registrar",
+    "agregar",
+    "usuario",
+    "usuarios",
+    "dni",
+    "sociedad",
+    "asignada",
+    "roles",
+    "asignados",
+    "activo"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Administración › Usuarios».",
+    "Presione el botón «Nuevo usuario» (o «Nuevo») para abrir el formulario.",
+    "Complete los campos: DNI / Usuario, Sociedad asignada, Roles asignados, Usuario activo.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "DNI y contraseña son requeridos",
+    "Debe asignar al menos un rol",
+    "Ya existe un usuario con ese DNI"
+  ],
+  "soluciones": [
+    "Complete todos los campos marcados con * antes de guardar.",
+    "El dato ya está registrado: busque el registro existente y edítelo en lugar de crear uno nuevo."
+  ],
+  "relacionados": [
+    "usuarios-editar-usuario",
+    "usuarios-editar-administrador",
+    "usuarios-nuevo-administrador-de-sociedad"
+  ]
+}

@@ -29,6 +29,7 @@ import DropDownsPage from '@/pages/admin/DropDownsPage';
 import GestionAdminPage from '@/pages/gestion/GestionAdminPage';
 import AdminSociedadPage from '@/pages/admin/AdminSociedadPage';
 import UsuarioPage from '@/pages/admin/UsuarioPage';
+import HelpCenter from '@/components/help/HelpCenter';
 import GestionSocioPage from '@/pages/gestion/GestionSocioPage';
 import PublicidadPage from '@/pages/publicidades/PublicidadPage';
 import CatalogoDigitalPage from '@/pages/catalogo/CatalogoDigitalPage';
@@ -49,6 +50,9 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: 'dashboard', element: <DashboardPage /> },
+
+      // Centro de ayuda — todos los roles (el contenido se filtra por rol en el backend)
+      { path: 'ayuda', element: <HelpCenter /> },
 
       // Usuarios — admin_general
       {

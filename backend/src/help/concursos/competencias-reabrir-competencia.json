@@ -1,0 +1,48 @@
+{
+  "id": "competencias-reabrir-competencia",
+  "titulo": "Cómo usar «Reabrir competencia»",
+  "descripcion": "Realizar la operación «Reabrir competencia» desde la pantalla «Competencias».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "accion",
+  "rutas": [
+    "/competencias"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "PUT /api/competencias/:id/reabrir"
+  ],
+  "keywords": [
+    "reabrir",
+    "competencia",
+    "competencias"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias».",
+    "Presione el botón «Reabrir competencia».",
+    "Confirme la operación en el aviso «¿Reabrir competencia?»."
+  ],
+  "erroresFrecuentes": [
+    "Competencia no encontrada",
+    "No tiene permisos para realizar esta acción"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "Su rol no permite esta operación. Si cree que debería tenerla, solicítela al Administrador General."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-eliminar-inscripcion",
+    "competencias-cerrar-inscripcion"
+  ]
+}

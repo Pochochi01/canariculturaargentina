@@ -1,0 +1,58 @@
+{
+  "id": "criadero-editar-pareja",
+  "titulo": "Cómo editar una pareja",
+  "descripcion": "Editar pareja desde la pantalla «Mi Criadero».",
+  "categoria": "criaderos",
+  "modulo": "criadero",
+  "tipo": "editar",
+  "rutas": [
+    "/mi-criadero"
+  ],
+  "rolesPermitidos": [
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "socio"
+  ],
+  "permisos": [
+    "PUT /api/parejas/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "pareja",
+    "criadero",
+    "macho",
+    "hembra",
+    "fecha",
+    "emparejamiento",
+    "jaula",
+    "trabajo",
+    "puesta",
+    "nido",
+    "comentarios"
+  ],
+  "pasos": [
+    "Ingrese a la pantalla «Mi Criadero».",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: Macho (obligatorio), Hembra (obligatorio), Fecha de Emparejamiento, N° Jaula de Trabajo, Fecha de Puesta de Nido, Comentarios.",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Socio no encontrado",
+    "Pareja no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "criadero-editar-ejemplar",
+    "criadero-nuevo-ejemplar",
+    "criadero-nueva-pareja",
+    "criadero-nueva-puesta",
+    "criadero-anillar-pichon",
+    "criadero-eliminar-ejemplar"
+  ]
+}

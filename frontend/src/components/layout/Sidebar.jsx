@@ -2,7 +2,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 import {
-  LayoutDashboard, Building2, Users, Gavel, Tag, Trophy, LogOut, Bird, Menu, X, BookOpen, Settings, FileSpreadsheet, ShieldCheck
+  LayoutDashboard, Building2, Users, Gavel, Tag, Trophy, LogOut, Bird, Menu, X, BookOpen, Settings, FileSpreadsheet, ShieldCheck, HelpCircle
 } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -78,6 +78,7 @@ export default function Sidebar({ onClose }) {
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
         <NavSection title="General">
           <NavItem to="/dashboard" icon={LayoutDashboard} label="Dashboard" onClick={onClose} />
+          <NavItem to="/ayuda" icon={HelpCircle} label="Ayuda" onClick={onClose} />
         </NavSection>
 
         {hasRole('admin_general') && (

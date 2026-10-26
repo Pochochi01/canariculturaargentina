@@ -1,0 +1,48 @@
+{
+  "id": "competencias-finalizar-competencia",
+  "titulo": "Cómo usar «Finalizar competencia»",
+  "descripcion": "Realizar la operación «Finalizar competencia» desde la pantalla «Competencias».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "accion",
+  "rutas": [
+    "/competencias"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "PUT /api/competencias/:id/finalizar"
+  ],
+  "keywords": [
+    "finalizar",
+    "competencia",
+    "competencias"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias».",
+    "Presione el botón «Finalizar competencia».",
+    "Confirme la operación en el aviso «¿Finalizar competencia?»."
+  ],
+  "erroresFrecuentes": [
+    "Competencia no encontrada",
+    "No tiene permisos para realizar esta acción"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "Su rol no permite esta operación. Si cree que debería tenerla, solicítela al Administrador General."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-eliminar-inscripcion",
+    "competencias-cerrar-inscripcion"
+  ]
+}

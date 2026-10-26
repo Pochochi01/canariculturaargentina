@@ -1,0 +1,69 @@
+{
+  "id": "socios-editar-socio",
+  "titulo": "Cómo editar un socio",
+  "descripcion": "Editar socio desde la pantalla «Socio».",
+  "categoria": "socios",
+  "modulo": "socios",
+  "tipo": "editar",
+  "rutas": [
+    "/socios/:id/editar"
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad",
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad",
+    "socio"
+  ],
+  "permisos": [
+    "PUT /api/socios/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "socio",
+    "socios",
+    "anillo",
+    "criador",
+    "dni",
+    "apellido",
+    "nombre",
+    "telefono",
+    "correo",
+    "electronico",
+    "domicilio",
+    "direccion",
+    "sociedad",
+    "crear",
+    "usuario",
+    "acceso",
+    "contrasena",
+    "inicial"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Socios» y abra la opción correspondiente.",
+    "Ubique el registro y presione Editar (ícono de lápiz).",
+    "Complete los campos: Anillo de Criador (obligatorio), DNI (obligatorio), Apellido (obligatorio), Nombre (obligatorio), Teléfono, Correo electrónico, Domicilio, Dirección, Sociedad (obligatorio), Crear usuario de acceso (DNI como contraseña inicial).",
+    "Presione Guardar para confirmar los cambios."
+  ],
+  "erroresFrecuentes": [
+    "Socio no encontrado",
+    "Sin acceso a este socio",
+    "Solo puede editar su propio perfil",
+    "El Anillo de Criador no puede estar vacío.",
+    "El DNI no puede estar vacío y debe contener solo números."
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "Complete todos los campos marcados con * antes de guardar."
+  ],
+  "relacionados": [
+    "socios-desactivar-socio",
+    "socios-nuevo-socio"
+  ]
+}
