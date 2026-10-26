@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-import { getSociedades, deleteSociedad, toggleActivaSociedad } from '@/api/sociedad.api';
+import { getSociedades, deleteSociedad, toggleActivaSociedad, getResumenEliminacion } from '@/api/sociedad.api';
 import DataTable from '@/components/shared/DataTable';
 import PageHeader from '@/components/shared/PageHeader';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
@@ -29,6 +29,12 @@ export default function SociedadListPage() {
       alert(err.response?.data?.error || 'No se pudo eliminar la sociedad');
       setDeleteId(null);
     }
+  });
+
+  const { data: resumen } = useQuery({
+    queryKey: ['sociedad-resumen-eliminacion', deleteId],
+    queryFn: () => getResumenEliminacion(deleteId),
+    enabled: !!deleteId
   });
 
   const toggleMutation = useMutation({
@@ -93,9 +99,11 @@ export default function SociedadListPage() {
         open={!!deleteId}
         onOpenChange={() => setDeleteId(null)}
         title="¿Eliminar sociedad definitivamente?"
-        description="Esta acción no se puede deshacer. Si la sociedad tiene socios, competencias o movimientos, no podrá eliminarse; en ese caso desactívela."
+        description={resumen
+          ? `ATENCIÓN: esta acción no se puede deshacer. Se eliminarán también ${resumen.socios} socio(s) (con sus ejemplares, parejas y puestas), ${resumen.competencias} competencia(s) (con sus inscripciones y mesas), ${resumen.movimientos} movimiento(s) y ${resumen.pagos} pago(s) de la sociedad. Si solo desea darla de baja, use la opción Desactivar.`
+          : 'Calculando datos asociados...'}
         onConfirm={() => deleteMutation.mutate(deleteId)}
-        loading={deleteMutation.isPending}
+        loading={deleteMutation.isPending || !resumen}
       />
     </div>
   );

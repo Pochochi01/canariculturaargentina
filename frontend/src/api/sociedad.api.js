@@ -18,5 +18,8 @@ export const deleteSociedad = (id) =>
 export const toggleActivaSociedad = (id) =>
   axiosClient.patch(`/sociedades/${id}/toggle-activa`).then(r => r.data);
 
+export const getResumenEliminacion = (id) =>
+  axiosClient.get(`/sociedades/${id}/resumen-eliminacion`).then(r => r.data);
+
 export const asignarAdmin = (id, data) =>
   axiosClient.post(`/sociedades/${id}/admin`, data).then(r => r.data);

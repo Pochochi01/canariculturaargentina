@@ -93,7 +93,13 @@ export default function SociedadFormPage({ adminMode = false }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label>Código único *</Label>
-                <Input {...f('codigo')} placeholder="Ej: SOC001" required />
+                <Input
+                  value={form.codigo || ''}
+                  onChange={e => setForm(p => ({ ...p, codigo: e.target.value.replace(/[\s.]/g, '').toUpperCase() }))}
+                  placeholder="Ej: SCA"
+                  required
+                />
+                <p className="text-xs text-muted-foreground">Ingrese las siglas de la sociedad sin puntos y sin espacios</p>
               </div>
               <div className="space-y-1.5">
                 <Label>Nombre *</Label>

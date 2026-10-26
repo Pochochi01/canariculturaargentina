@@ -5,6 +5,19 @@ const Competencia = require('../models/Competencia');
 const MovimientoSociedad = require('../models/MovimientoSociedad');
 const PagoCuota = require('../models/PagoCuota');
 const ConfigCuota = require('../models/ConfigCuota');
+const Ejemplar = require('../models/Ejemplar');
+const Pareja = require('../models/Pareja');
+const Puesta = require('../models/Puesta');
+const Notificacion = require('../models/Notificacion');
+const Inscripcion = require('../models/Inscripcion');
+const Mesa = require('../models/Mesa');
+const AsignacionJuez = require('../models/AsignacionJuez');
+const NomencladorCompetencia = require('../models/NomencladorCompetencia');
+const Publicidad = require('../models/Publicidad');
+const Revista = require('../models/Revista');
+
+// Siglas sin puntos ni espacios, en mayúsculas
+const normalizarCodigo = (c) => String(c || '').replace(/[\s.]/g, '').toUpperCase();
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -27,7 +40,8 @@ exports.getById = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const { codigo, nombre, provincia, direccion, telefono, mail, federacion } = req.body;
+    const { nombre, provincia, direccion, telefono, mail, federacion } = req.body;
+    const codigo = normalizarCodigo(req.body.codigo);
     const sociedad = await Sociedad.create({ codigo, nombre, provincia, direccion, telefono, mail, federacion });
     res.status(201).json(sociedad);
   } catch (err) { next(err); }
@@ -49,31 +63,64 @@ exports.update = async (req, res, next) => {
       sociedad.federacion = typeof fedRaw === 'string' ? fedRaw.trim().toUpperCase() : '';
     }
 
+    if (req.body.codigo !== undefined) sociedad.codigo = normalizarCodigo(req.body.codigo);
+
     await sociedad.save();
     res.json(sociedad);
   } catch (err) { next(err); }
 };
 
+const contarRelacionados = async (id) => {
+  const [socios, competencias, movimientos, pagos] = await Promise.all([
+    Socio.countDocuments({ sociedadId: id }),
+    Competencia.countDocuments({ sociedadId: id }),
+    MovimientoSociedad.countDocuments({ sociedadId: id }),
+    PagoCuota.countDocuments({ sociedadId: id })
+  ]);
+  return { socios, competencias, movimientos, pagos };
+};
+
+exports.resumenEliminacion = async (req, res, next) => {
+  try {
+    const sociedad = await Sociedad.findById(req.params.id);
+    if (!sociedad) return res.status(404).json({ error: 'Sociedad no encontrada' });
+    res.json(await contarRelacionados(sociedad._id));
+  } catch (err) { next(err); }
+};
+
+// Borrado definitivo en cascada: socios (y sus ejemplares, parejas, puestas, etc.),
+// competencias (y sus inscripciones, mesas, etc.), movimientos, pagos y cuotas.
 exports.remove = async (req, res, next) => {
   try {
     const sociedad = await Sociedad.findById(req.params.id);
     if (!sociedad) return res.status(404).json({ error: 'Sociedad no encontrada' });
 
     const id = sociedad._id;
-    const [socios, competencias, movimientos, pagos] = await Promise.all([
-      Socio.countDocuments({ sociedadId: id }),
-      Competencia.countDocuments({ sociedadId: id }),
-      MovimientoSociedad.countDocuments({ sociedadId: id }),
-      PagoCuota.countDocuments({ sociedadId: id })
-    ]);
-    if (socios || competencias || movimientos || pagos) {
-      return res.status(409).json({
-        error: `No se puede eliminar: tiene ${socios} socio(s), ${competencias} competencia(s), ${movimientos} movimiento(s) y ${pagos} pago(s) asociados. Puede desactivarla en su lugar.`
-      });
-    }
+    const socioIds = await Socio.find({ sociedadId: id }).distinct('_id');
+    const competenciaIds = await Competencia.find({ sociedadId: id }).distinct('_id');
+    const porSocio = { socioId: { $in: socioIds } };
+    const porCompetencia = { competenciaId: { $in: competenciaIds } };
 
-    await ConfigCuota.deleteMany({ sociedadId: id });
-    await User.updateMany({ sociedadId: id }, { $set: { sociedadId: null } });
+    await Promise.all([
+      Ejemplar.deleteMany(porSocio),
+      Pareja.deleteMany(porSocio),
+      Puesta.deleteMany(porSocio),
+      Notificacion.deleteMany(porSocio),
+      Inscripcion.deleteMany({ $or: [porSocio, porCompetencia] }),
+      Mesa.deleteMany(porCompetencia),
+      AsignacionJuez.deleteMany(porCompetencia),
+      NomencladorCompetencia.deleteMany(porCompetencia),
+      Publicidad.deleteMany(porCompetencia),
+      Revista.deleteMany(porCompetencia),
+      PagoCuota.deleteMany({ $or: [{ sociedadId: id }, porSocio] }),
+      MovimientoSociedad.deleteMany({ sociedadId: id }),
+      ConfigCuota.deleteMany({ sociedadId: id })
+    ]);
+    await Promise.all([
+      Socio.deleteMany({ sociedadId: id }),
+      Competencia.deleteMany({ sociedadId: id }),
+      User.updateMany({ sociedadId: id }, { $set: { sociedadId: null } })
+    ]);
     await sociedad.deleteOne();
     res.json({ message: 'Sociedad eliminada definitivamente' });
   } catch (err) { next(err); }
