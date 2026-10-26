@@ -60,6 +60,17 @@ exports.login = async (req, res, next) => {
     if (!user || !(await user.comparePassword(password)))
       return res.status(401).json({ error: 'DNI o contraseña incorrectos' });
 
+    // Completa roles que el usuario tiene de hecho pero no figuran guardados
+    // (p. ej. datos anteriores donde un rol pisaba a otro)
+    const [esSocio, esAdminSociedad] = await Promise.all([
+      Socio.exists({ userId: user._id }),
+      Sociedad.exists({ adminId: user._id })
+    ]);
+    const antes = user.effectiveRoles().length;
+    if (esSocio) user.addRole('socio');
+    if (esAdminSociedad) user.addRole('admin_sociedad');
+    if (user.effectiveRoles().length !== antes) await user.save();
+
     const roles = user.effectiveRoles();
     if (roles.length === 0)
       return res.status(403).json({ error: 'El usuario no tiene roles asignados' });

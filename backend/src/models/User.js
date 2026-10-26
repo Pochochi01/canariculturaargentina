@@ -22,6 +22,12 @@ UserSchema.methods.effectiveRoles = function () {
   return [];
 };
 
+// Agrega un rol sin pisar los existentes (un mismo DNI puede tener varios perfiles)
+UserSchema.methods.addRole = function (role) {
+  this.roles = [...new Set([...this.effectiveRoles(), role])];
+  if (!this.role) this.role = role;
+};
+
 UserSchema.methods.comparePassword = async function (password) {
   return bcrypt.compare(password, this.passwordHash);
 };

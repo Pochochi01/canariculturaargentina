@@ -59,7 +59,7 @@ exports.create = async (req, res, next) => {
       const passwordHash = await User.hashPassword(operadorPassword || operadorDni);
       operador = await User.create({ dni: operadorDni, passwordHash, role: 'operador' });
     } else {
-      operador.role = 'operador';
+      operador.addRole('operador');
       await operador.save();
     }
 
@@ -98,7 +98,7 @@ exports.update = async (req, res, next) => {
         const passwordHash = await User.hashPassword(operadorPassword || operadorDni);
         operador = await User.create({ dni: operadorDni, passwordHash, role: 'operador' });
       } else {
-        operador.role = 'operador';
+        operador.addRole('operador');
         await operador.save();
       }
       mesa.operadorId = operador._id;

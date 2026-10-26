@@ -336,7 +336,7 @@ exports.crearUsuario = async (req, res, next) => {
     const existe = await User.findOne({ dni: socio.dni });
     if (existe) {
       // Reutilizar usuario existente si no tiene sociedad asignada
-      existe.role = 'socio';
+      existe.addRole('socio');
       existe.sociedadId = socio.sociedadId;
       await existe.save();
       socio.userId = existe._id;

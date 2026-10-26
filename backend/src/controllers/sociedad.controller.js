@@ -149,10 +149,11 @@ exports.asignarAdmin = async (req, res, next) => {
         dni,
         passwordHash,
         role: 'admin_sociedad',
+        roles: ['admin_sociedad'],
         sociedadId: sociedad._id
       });
     } else {
-      adminUser.role = 'admin_sociedad';
+      adminUser.addRole('admin_sociedad');
       adminUser.sociedadId = sociedad._id;
       await adminUser.save();
     }
