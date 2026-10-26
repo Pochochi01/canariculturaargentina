@@ -222,7 +222,7 @@ export default function AdminSociedadPage() {
       <PageHeader
         title="Administradores de Sociedad"
         description="Gestión de usuarios con acceso de administración de sociedad"
-        action={
+        actions={
           <Button onClick={() => setModal({ open: true, item: null })}>
             <Plus className="h-4 w-4 mr-2" /> Nuevo administrador
           </Button>

@@ -25,6 +25,7 @@ const revistaRoutes                  = require('./routes/revista.routes');
 const nomencladorCompetenciaRoutes   = require('./routes/nomencladorCompetencia.routes');
 const csvToPdfRoutes                 = require('./routes/csvToPdf.routes');
 const adminSociedadRoutes            = require('./routes/adminSociedad.routes');
+const usuarioRoutes                  = require('./routes/usuario.routes');
 const notificacionRoutes             = require('./routes/notificacion.routes');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -78,6 +79,7 @@ app.use('/api/revistas',                 revistaRoutes);
 app.use('/api/nomenclador-competencia',  nomencladorCompetenciaRoutes);
 app.use('/api/csv-to-pdf',              csvToPdfRoutes);
 app.use('/api/admin-sociedad',          adminSociedadRoutes);
+app.use('/api/usuarios',                usuarioRoutes);
 app.use('/api/notificaciones',          notificacionRoutes);
 app.use('/revistas',             express.static(path.join(__dirname, '../uploads/revistas')));
 

@@ -82,6 +82,7 @@ export default function Sidebar({ onClose }) {
 
         {hasRole('admin_general') && (
           <NavSection title="Administración">
+            <NavItem to="/admin/usuarios" icon={Users} label="Usuarios" onClick={onClose} />
             <NavItem to="/admin/admins-sociedad" icon={ShieldCheck} label="Admins. Sociedad" onClick={onClose} />
             <NavItem to="/sociedades" icon={Building2} label="Sociedades" onClick={onClose} />
             <NavItem to="/jueces" icon={Gavel} label="Jueces" onClick={onClose} />

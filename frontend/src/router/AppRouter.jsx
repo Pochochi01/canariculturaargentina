@@ -28,6 +28,7 @@ import PremiosPage from '@/pages/admin/PremiosPage';
 import DropDownsPage from '@/pages/admin/DropDownsPage';
 import GestionAdminPage from '@/pages/gestion/GestionAdminPage';
 import AdminSociedadPage from '@/pages/admin/AdminSociedadPage';
+import UsuarioPage from '@/pages/admin/UsuarioPage';
 import GestionSocioPage from '@/pages/gestion/GestionSocioPage';
 import PublicidadPage from '@/pages/publicidades/PublicidadPage';
 import CatalogoDigitalPage from '@/pages/catalogo/CatalogoDigitalPage';
@@ -48,6 +49,12 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: 'dashboard', element: <DashboardPage /> },
+
+      // Usuarios — admin_general
+      {
+        path: 'admin/usuarios',
+        element: <ProtectedRoute allowedRoles={['admin_general']}><UsuarioPage /></ProtectedRoute>
+      },
 
       // Admins de sociedad — admin_general
       {
