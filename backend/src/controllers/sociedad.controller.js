@@ -1,5 +1,10 @@
 const Sociedad = require('../models/Sociedad');
 const User = require('../models/User');
+const Socio = require('../models/Socio');
+const Competencia = require('../models/Competencia');
+const MovimientoSociedad = require('../models/MovimientoSociedad');
+const PagoCuota = require('../models/PagoCuota');
+const ConfigCuota = require('../models/ConfigCuota');
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -51,13 +56,36 @@ exports.update = async (req, res, next) => {
 
 exports.remove = async (req, res, next) => {
   try {
-    const sociedad = await Sociedad.findByIdAndUpdate(
-      req.params.id,
-      { activa: false },
-      { new: true }
-    );
+    const sociedad = await Sociedad.findById(req.params.id);
     if (!sociedad) return res.status(404).json({ error: 'Sociedad no encontrada' });
-    res.json({ message: 'Sociedad desactivada correctamente' });
+
+    const id = sociedad._id;
+    const [socios, competencias, movimientos, pagos] = await Promise.all([
+      Socio.countDocuments({ sociedadId: id }),
+      Competencia.countDocuments({ sociedadId: id }),
+      MovimientoSociedad.countDocuments({ sociedadId: id }),
+      PagoCuota.countDocuments({ sociedadId: id })
+    ]);
+    if (socios || competencias || movimientos || pagos) {
+      return res.status(409).json({
+        error: `No se puede eliminar: tiene ${socios} socio(s), ${competencias} competencia(s), ${movimientos} movimiento(s) y ${pagos} pago(s) asociados. Puede desactivarla en su lugar.`
+      });
+    }
+
+    await ConfigCuota.deleteMany({ sociedadId: id });
+    await User.updateMany({ sociedadId: id }, { $set: { sociedadId: null } });
+    await sociedad.deleteOne();
+    res.json({ message: 'Sociedad eliminada definitivamente' });
+  } catch (err) { next(err); }
+};
+
+exports.toggleActiva = async (req, res, next) => {
+  try {
+    const sociedad = await Sociedad.findById(req.params.id);
+    if (!sociedad) return res.status(404).json({ error: 'Sociedad no encontrada' });
+    sociedad.activa = !sociedad.activa;
+    await sociedad.save();
+    res.json(sociedad);
   } catch (err) { next(err); }
 };
 
