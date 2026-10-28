@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { getCompetencias, deleteCompetencia, finalizarCompetencia, reabrirCompetencia } from '@/api/competencia.api';
 import { useAuth } from '@/context/AuthContext';
 import DataTable from '@/components/shared/DataTable';
+import { FILTROS, filtrar, agrupar, MSG_FINALIZAR_ABIERTA } from '@/lib/competencias';
 import PageHeader from '@/components/shared/PageHeader';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Pencil, Trash2, Eye, CheckCheck, RotateCcw } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, CheckCheck, RotateCcw, History, CalendarClock } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 
@@ -32,10 +34,13 @@ export default function CompetenciaListPage() {
   const [deleteId,    setDeleteId]    = useState(null);
   const [finalizarId, setFinalizarId] = useState(null);
   const [reabrirId,   setReopenId]    = useState(null);
+  const [aviso,       setAviso]       = useState('');
+  const [filtro,      setFiltro]      = useState('todas');
+  const esAdminSociedad = user?.role === 'admin_sociedad';
 
   const { data: competencias = [], isLoading } = useQuery({
     queryKey: ['competencias'],
-    queryFn: getCompetencias
+    queryFn: () => getCompetencias()
   });
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['competencias'] });
@@ -47,8 +52,14 @@ export default function CompetenciaListPage() {
 
   const finalizarMutation = useMutation({
     mutationFn: finalizarCompetencia,
-    onSuccess: () => { invalidate(); setFinalizarId(null); }
+    onSuccess: () => { invalidate(); setFinalizarId(null); },
+    // El backend es la autoridad: muestra su mensaje si rechaza la finalización
+    onError: (e) => { setFinalizarId(null); setAviso(e.response?.data?.error || 'No se pudo finalizar la competencia'); }
   });
+
+  // Inscripción abierta: no se pide confirmación, se explica por qué no se puede
+  const pedirFinalizar = (row) =>
+    row.estadoInscripcion === 'abierta' ? setAviso(MSG_FINALIZAR_ABIERTA) : setFinalizarId(row._id);
 
   const reabrirMutation = useMutation({
     mutationFn: reabrirCompetencia,
@@ -106,8 +117,8 @@ export default function CompetenciaListPage() {
               <Button
                 variant="ghost" size="icon"
                 className="text-slate-600 hover:text-slate-900"
-                title="Finalizar competencia"
-                onClick={() => setFinalizarId(row._id)}
+                title={row.estadoInscripcion === 'abierta' ? 'Cierre la inscripción para poder finalizar' : 'Finalizar competencia'}
+                onClick={() => pedirFinalizar(row)}
               >
                 <CheckCheck className="h-4 w-4" />
               </Button>
@@ -144,7 +155,27 @@ export default function CompetenciaListPage() {
           </Button>
         }
       />
-      <DataTable columns={columns} data={competencias} loading={isLoading} emptyMessage="No hay competencias registradas" />
+      {esAdminSociedad ? (
+        <ListadoAgrupado
+          competencias={filtrar(competencias, filtro, user)}
+          filtro={filtro}
+          onFiltro={setFiltro}
+          columns={columns}
+          loading={isLoading}
+        />
+      ) : (
+        <DataTable columns={columns} data={competencias} loading={isLoading} emptyMessage="No hay competencias registradas" />
+      )}
+
+      <Dialog open={!!aviso} onOpenChange={(v) => !v && setAviso('')}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>No se puede finalizar</DialogTitle>
+            <DialogDescription>{aviso}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter><Button onClick={() => setAviso('')}>Entendido</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <ConfirmDialog
         open={!!deleteId} onOpenChange={() => setDeleteId(null)}
@@ -164,6 +195,51 @@ export default function CompetenciaListPage() {
         description="La competencia volverá al estado 'En curso' y dejará de aparecer en el histórico."
         onConfirm={() => reabrirMutation.mutate(reabrirId)} loading={reabrirMutation.isPending}
       />
+    </div>
+  );
+}
+
+// Admin de sociedad: filtros + bloque de activas arriba y el historial separado debajo
+export function ListadoAgrupado({ competencias, filtro, onFiltro, columns, loading }) {
+  const { activas, historial } = agrupar(competencias);
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filtros">
+        {FILTROS.map(f => (
+          <button
+            key={f.valor}
+            type="button"
+            aria-pressed={filtro === f.valor}
+            onClick={() => onFiltro(f.valor)}
+            className={`rounded-full border px-3 py-1 text-xs transition-colors ${filtro === f.valor
+              ? 'border-primary bg-primary text-primary-foreground'
+              : 'border-border bg-card text-muted-foreground hover:border-primary'}`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      <section aria-labelledby="bloque-activas">
+        <h2 id="bloque-activas" className="mb-2 flex items-center gap-2 text-base font-semibold">
+          <CalendarClock className="h-4 w-4 text-green-600" /> Competencias Activas
+          <span className="text-xs font-normal text-muted-foreground">({activas.length}) · inscripción abierta, la más próxima primero</span>
+        </h2>
+        <DataTable columns={columns} data={activas} loading={loading} emptyMessage="No hay competencias con inscripción abierta" />
+      </section>
+
+      <div className="flex items-center gap-3" role="separator">
+        <div className="h-px flex-1 bg-border" />
+        <h2 id="bloque-historial" className="flex items-center gap-2 text-base font-semibold text-muted-foreground">
+          <History className="h-4 w-4" /> Historial de Competencias
+        </h2>
+        <div className="h-px flex-1 bg-border" />
+      </div>
+
+      <section aria-labelledby="bloque-historial">
+        <p className="mb-2 text-xs text-muted-foreground">({historial.length}) · finalizadas, cerradas e históricas, la más reciente primero</p>
+        <DataTable columns={columns} data={historial} loading={loading} emptyMessage="Sin competencias en el historial" />
+      </section>
     </div>
   );
 }

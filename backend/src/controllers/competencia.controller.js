@@ -3,106 +3,15 @@ const Competencia = require('../models/Competencia');
 const Inscripcion = require('../models/Inscripcion');
 const Socio       = require('../models/Socio');
 const Sociedad    = require('../models/Sociedad');
-const Federacion  = require('../models/Federacion');
+const { filtroVisibilidad, puedeAcceder, puedeAdministrar } = require('../services/competenciaAcceso.service');
+const nacional = require('../services/nacional.service');
+const Mesa = require('../models/Mesa');
+const AsignacionJuez = require('../models/AsignacionJuez');
+const NomencladorCompetencia = require('../models/NomencladorCompetencia');
+const AuditoriaComposicion = require('../models/AuditoriaComposicion');
 
-/**
- * Construye el filtro de visibilidad de competencias según el rol del usuario.
- *
- * admin_general : ve todo.
- * admin_sociedad: ve las competencias propias + abierto/mundial de cualquier sociedad
- *                 + nacionales de su federación (si tiene).
- * otros         : sin filtro (acceso controlado por rutas).
- *
- * Se recibe la federación de la sociedad del usuario para evitar una consulta extra
- * en cada request; se pasa null cuando no se conoce aún.
- */
-const buildCompetenciaFilter = (user, federacionPropia = null) => {
-  if (user.role !== 'admin_sociedad') return {};
-
-  const sid = user.sociedadId;
-
-  // Siempre ve sus propias competencias
-  const condiciones = [{ sociedadId: sid }];
-
-  // Ve abierto y mundial de cualquier sociedad
-  condiciones.push({ tipoCompetencia: { $in: ['abierto', 'mundial'] } });
-
-  // Ve nacionales de su federación (si tiene una)
-  if (federacionPropia) {
-    condiciones.push({
-      tipoCompetencia: 'nacional',
-      _sociedadFederacion: federacionPropia  // se resuelve vía lookup; ver getAll
-    });
-  }
-
-  return { $or: condiciones };
-};
-
-/**
- * Devuelve el filtro Mongoose para listar competencias visibles para el usuario.
- *
- * admin_sociedad ve:
- *   - Competencias propias (clasica/abierto de su sociedad)
- *   - Todas las de tipo 'abierto' (cualquier sociedad)
- *   - Todas las de tipo 'mundial'
- *   - Nacionales cuya federacionId coincide con la federación de su sociedad
- */
-const getCompetenciaFilter = async (user, extraFilters = {}) => {
-  if (user.role !== 'admin_sociedad') return { ...extraFilters };
-
-  const sid = user.sociedadId;
-
-  const condiciones = [
-    { sociedadId: sid },
-    { tipoCompetencia: 'abierto' },
-    { tipoCompetencia: 'mundial' }
-  ];
-
-  // Nacionales: buscar la Federacion doc cuyo codigo coincide con la federación de la sociedad
-  const sociedadUsuario = await Sociedad.findById(sid).select('federacion').lean();
-  const fedCodigo = sociedadUsuario?.federacion?.trim().toUpperCase();
-  if (fedCodigo) {
-    const fedDoc = await Federacion.findOne({
-      codigo: { $regex: new RegExp(`^${fedCodigo}$`, 'i') }
-    }).select('_id').lean();
-    if (fedDoc) {
-      condiciones.push({ tipoCompetencia: 'nacional', federacionId: fedDoc._id });
-    }
-  }
-
-  return { $or: condiciones, ...extraFilters };
-};
-
-/**
- * Verifica si un admin_sociedad puede acceder a una competencia concreta.
- *
- * - abierto / mundial : siempre
- * - clasica           : solo si es su propia sociedad
- * - nacional          : si la federacionId de la competencia coincide con la federación de su sociedad
- */
-const adminSociedadPuedeAcceder = async (competencia, user) => {
-  const tipo = competencia.tipoCompetencia;
-
-  if (tipo === 'abierto' || tipo === 'mundial') return true;
-
-  // Competencia propia (clasica u abierto de su sociedad)
-  const orgId = competencia.sociedadId?._id ?? competencia.sociedadId;
-  if (orgId?.toString() === user.sociedadId?.toString()) return true;
-
-  if (tipo === 'nacional') {
-    const fedId = competencia.federacionId?._id ?? competencia.federacionId;
-    if (!fedId) return false;
-    const [fedDoc, socUser] = await Promise.all([
-      Federacion.findById(fedId).select('codigo').lean(),
-      Sociedad.findById(user.sociedadId).select('federacion').lean()
-    ]);
-    const codFed = fedDoc?.codigo?.trim().toUpperCase();
-    const codSoc = socUser?.federacion?.trim().toUpperCase();
-    return !!(codFed && codFed === codSoc);
-  }
-
-  return false;
-};
+const MSG_INSCRIPCION_ABIERTA =
+  'No es posible finalizar la competencia mientras la inscripción permanezca abierta. Debe cerrar la inscripción previamente.';
 
 // ─── Helpers para cerrar inscripción ────────────────────────────────────────
 
@@ -294,9 +203,13 @@ exports.finalizarCompetencia = async (req, res, next) => {
     const competencia = await Competencia.findById(req.params.id);
     if (!competencia) return res.status(404).json({ error: 'Competencia no encontrada' });
 
-    if (req.user.role === 'admin_sociedad' &&
-        competencia.sociedadId.toString() !== req.user.sociedadId.toString()) {
+    if (!puedeAdministrar(competencia, req.user)) {
       return res.status(403).json({ error: 'No tiene permisos para realizar esta acción' });
+    }
+
+    // La inscripción debe estar cerrada: el backend es la autoridad final (Tarea 1)
+    if (competencia.estadoInscripcion === 'abierta') {
+      return res.status(409).json({ error: MSG_INSCRIPCION_ABIERTA, codigo: 'INSCRIPCION_ABIERTA' });
     }
 
     competencia.estadoCompetencia = 'finalizada';
@@ -310,8 +223,7 @@ exports.reabrirCompetencia = async (req, res, next) => {
     const competencia = await Competencia.findById(req.params.id);
     if (!competencia) return res.status(404).json({ error: 'Competencia no encontrada' });
 
-    if (req.user.role === 'admin_sociedad' &&
-        competencia.sociedadId.toString() !== req.user.sociedadId.toString()) {
+    if (!puedeAdministrar(competencia, req.user)) {
       return res.status(403).json({ error: 'No tiene permisos para realizar esta acción' });
     }
 
@@ -357,7 +269,7 @@ exports.getAll = async (req, res, next) => {
     }
     if (req.query.estadoInscripcion) extra.estadoInscripcion = req.query.estadoInscripcion;
 
-    const filter = await getCompetenciaFilter(req.user, extra);
+    const filter = await filtroVisibilidad(req.user, extra);
 
     const competencias = await Competencia.find(filter)
       .populate('sociedadId',   'nombre codigo')
@@ -377,8 +289,7 @@ exports.getById = async (req, res, next) => {
     if (!competencia) return res.status(404).json({ error: 'Competencia no encontrada' });
 
     if (req.user.role === 'admin_sociedad') {
-      const puedeAcceder = await adminSociedadPuedeAcceder(competencia, req.user);
-      if (!puedeAcceder) {
+      if (!(await puedeAcceder(competencia, req.user))) {
         return res.status(403).json({ error: 'Sin acceso a esta competencia' });
       }
     }
@@ -430,8 +341,7 @@ exports.update = async (req, res, next) => {
     const competencia = await Competencia.findById(req.params.id);
     if (!competencia) return res.status(404).json({ error: 'Competencia no encontrada' });
 
-    if (req.user.role === 'admin_sociedad' &&
-        competencia.sociedadId?.toString() !== req.user.sociedadId?.toString()) {
+    if (!puedeAdministrar(competencia, req.user)) {
       return res.status(403).json({ error: 'No tiene permisos para realizar esta acción' });
     }
 
@@ -442,7 +352,12 @@ exports.update = async (req, res, next) => {
     if (maxIndividuales   !== undefined) competencia.maxIndividuales   = maxIndividuales;
     if (maxDuos           !== undefined) competencia.maxDuos           = maxDuos;
     if (maxCuartetos      !== undefined) competencia.maxCuartetos      = maxCuartetos;
-    if (estadoInscripcion !== undefined) competencia.estadoInscripcion = estadoInscripcion;
+    if (estadoInscripcion !== undefined) {
+      if (competencia.estadoCompetencia === 'finalizada' && estadoInscripcion === 'abierta') {
+        return res.status(409).json({ error: 'No se puede reabrir la inscripción de una competencia finalizada.' });
+      }
+      competencia.estadoInscripcion = estadoInscripcion;
+    }
     // fecha: solo asignar si viene un valor no vacío para evitar cast error de Mongoose
     if (fecha) competencia.fecha = fecha;
     else if (fecha === '') competencia.fecha = null;
@@ -468,11 +383,19 @@ exports.remove = async (req, res, next) => {
     const competencia = await Competencia.findById(req.params.id);
     if (!competencia) return res.status(404).json({ error: 'Competencia no encontrada' });
 
-    if (req.user.role === 'admin_sociedad' &&
-        competencia.sociedadId.toString() !== req.user.sociedadId.toString()) {
+    if (!puedeAdministrar(competencia, req.user)) {
       return res.status(403).json({ error: 'No tiene permisos para realizar esta acción' });
     }
 
+    // Cascada: sin esto las inscripciones y mesas quedaban huérfanas
+    const porCompetencia = { competenciaId: competencia._id };
+    await Promise.all([
+      Inscripcion.deleteMany(porCompetencia),
+      Mesa.deleteMany(porCompetencia),
+      AsignacionJuez.deleteMany(porCompetencia),
+      NomencladorCompetencia.deleteMany(porCompetencia),
+      AuditoriaComposicion.deleteMany(porCompetencia)
+    ]);
     await Competencia.findByIdAndDelete(req.params.id);
     res.json({ message: 'Competencia eliminada' });
   } catch (err) { next(err); }
@@ -490,8 +413,7 @@ exports.cerrarInscripcion = async (req, res, next) => {
     const competencia = await Competencia.findById(req.params.id);
     if (!competencia) return res.status(404).json({ error: 'Competencia no encontrada' });
 
-    if (req.user.role === 'admin_sociedad' &&
-        competencia.sociedadId.toString() !== req.user.sociedadId.toString()) {
+    if (!puedeAdministrar(competencia, req.user)) {
       return res.status(403).json({ error: 'No tiene permisos para realizar esta acción' });
     }
 
@@ -548,5 +470,24 @@ exports.cerrarInscripcion = async (req, res, next) => {
       message: `Inscripción cerrada. ${bulkOps.length} jaulas numeradas.`,
       totalJaulas: bulkOps.length
     });
+  } catch (err) { next(err); }
+};
+
+// ── Aves al Nacional ─────────────────────────────────────────────────────────
+// GET /competencias/:id/aves-nacional
+exports.getAvesNacional = async (req, res, next) => {
+  try {
+    const competencia = await Competencia.findById(req.params.id).lean();
+    if (!competencia) return res.status(404).json({ error: 'Competencia no encontrada' });
+    res.json(await nacional.listarPremiadas(competencia, req.user));
+  } catch (err) { next(err); }
+};
+
+// POST /competencias/:id/aves-nacional  { inscripcionIds: [] }
+exports.enviarAvesNacional = async (req, res, next) => {
+  try {
+    const competencia = await Competencia.findById(req.params.id).lean();
+    if (!competencia) return res.status(404).json({ error: 'Competencia no encontrada' });
+    res.json(await nacional.enviarAlNacional({ competencia, inscripcionIds: req.body.inscripcionIds, user: req.user }));
   } catch (err) { next(err); }
 };

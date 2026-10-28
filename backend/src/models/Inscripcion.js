@@ -29,7 +29,11 @@ const InscripcionSchema = new mongoose.Schema({
   numJaula: { type: Number, default: null },
   puntaje: { type: Number, default: null, min: 0, max: 100 },
   premios: { type: [PremioSchema], default: [] },
-  observaciones: { type: String, trim: true }
+  observaciones: { type: String, trim: true },
+  // Traspaso "Aves al Nacional": inscripción de la competencia clásica de origen
+  origenInscripcionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Inscripcion', default: undefined },
+  origenCompetenciaId: { type: mongoose.Schema.Types.ObjectId, ref: 'Competencia', default: undefined },
+  premiosOrigen:       { type: [PremioSchema], default: undefined }
 }, { timestamps: true });
 
 // Un mismo socio no puede repetir el mismo anillo en la misma competencia.
@@ -43,6 +47,11 @@ InscripcionSchema.index({ competenciaId: 1, lote: 1 });
 InscripcionSchema.index({ numCriador: 1, competenciaId: 1 });
 InscripcionSchema.index({ competenciaId: 1, numJaula: 1 });
 InscripcionSchema.index({ grupoPresentacion: 1 });
+// Un ave de origen solo puede enviarse una vez a cada competencia destino
+InscripcionSchema.index(
+  { competenciaId: 1, origenInscripcionId: 1 },
+  { unique: true, partialFilterExpression: { origenInscripcionId: { $type: 'objectId' } } }
+);
 
 InscripcionSchema.pre('save', function (next) {
   if (!this.lote) this.lote = this.codigoNomenclador;

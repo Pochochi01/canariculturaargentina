@@ -32,3 +32,9 @@ export const getHistorico = (params) =>
 
 export const getResultadosHistorico = (competenciaId) =>
   axiosClient.get(`/competencias/historico/${competenciaId}/resultados`).then(r => r.data);
+
+export const getAvesNacional = (id) =>
+  axiosClient.get(`/competencias/${id}/aves-nacional`).then(r => r.data);
+
+export const enviarAvesNacional = (id, inscripcionIds) =>
+  axiosClient.post(`/competencias/${id}/aves-nacional`, { inscripcionIds }).then(r => r.data);

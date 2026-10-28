@@ -18,6 +18,10 @@ const authenticate = async (req, res, next) => {
     if (!user || !user.activo)
       return res.status(401).json({ error: 'Usuario no autorizado' });
 
+    // El rol elegido en el login debe seguir asignado (si se lo quitaron, el token deja de valer)
+    if (!user.effectiveRoles().includes(decoded.role))
+      return res.status(401).json({ error: 'El rol de la sesión ya no está asignado al usuario' });
+
     // Sobrescribir role con el rol activo elegido en el login (viene del JWT).
     // Mantiene compatibilidad con todo el código existente que lee req.user.role.
     user.role = decoded.role;

@@ -48,18 +48,20 @@
   ],
   "erroresFrecuentes": [
     "Competencia no encontrada",
-    "No tiene permisos para realizar esta acción"
+    "No tiene permisos para realizar esta acción",
+    "No se puede reabrir la inscripción de una competencia finalizada."
   ],
   "soluciones": [
     "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
-    "Su rol no permite esta operación. Si cree que debería tenerla, solicítela al Administrador General."
+    "Su rol no permite esta operación. Si cree que debería tenerla, solicítela al Administrador General.",
+    "La competencia o inscripción está cerrada. Un administrador puede reabrirla si corresponde."
   ],
   "relacionados": [
     "competencias-eliminar-competencia",
     "competencias-finalizar-competencia",
     "competencias-reabrir-competencia",
+    "competencias-abierta-cierre-la-inscripcion-para-poder-finalizar-finalizar-competencia",
     "competencias-nuevo-competencia",
-    "competencias-editar-calificacion-anillo",
-    "competencias-eliminar-inscripcion"
+    "competencias-editar-calificacion-anillo"
   ]
 }

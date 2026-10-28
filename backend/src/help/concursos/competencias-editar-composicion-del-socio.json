@@ -1,0 +1,64 @@
+{
+  "id": "competencias-editar-composicion-del-socio",
+  "titulo": "Cómo editar una competencia",
+  "descripcion": "Editar competencia desde la pantalla «Competencia».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "editar",
+  "rutas": [
+    "/competencias/:id"
+  ],
+  "enlaces": [
+    {
+      "ruta": "/competencias",
+      "roles": [
+        "admin_general",
+        "admin_sociedad"
+      ]
+    }
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad",
+    "socio"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "PUT /api/competencias/:id"
+  ],
+  "keywords": [
+    "editar",
+    "modificar",
+    "cambiar",
+    "actualizar",
+    "composicion",
+    "socio",
+    "competencia",
+    "competencias"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias» y abra la opción correspondiente.",
+    "Ubique el registro y presione Editar (ícono de lápiz)."
+  ],
+  "erroresFrecuentes": [
+    "Competencia no encontrada",
+    "No tiene permisos para realizar esta acción",
+    "No se puede reabrir la inscripción de una competencia finalizada."
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "Su rol no permite esta operación. Si cree que debería tenerla, solicítela al Administrador General.",
+    "La competencia o inscripción está cerrada. Un administrador puede reabrirla si corresponde."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-abierta-cierre-la-inscripcion-para-poder-finalizar-finalizar-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo"
+  ]
+}

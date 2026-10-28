@@ -7,6 +7,9 @@ const NomencladorColor = require("../models/NomencladorColor");
 const NomencladorForma = require("../models/NomencladorForma");
 const Sociedad   = require("../models/Sociedad");
 const Federacion = require("../models/Federacion");
+const AuditoriaComposicion = require("../models/AuditoriaComposicion");
+const { puedeAcceder } = require("../services/competenciaAcceso.service");
+const composicion = require("../services/composicion.service");
 
 const getNomenclador = async (tipo, codigo) => {
   const Model = tipo === "color" ? NomencladorColor : NomencladorForma;
@@ -247,38 +250,9 @@ exports.create = async (req, res, next) => {
         .json({ error: "La competencia no está abierta para inscripciones" });
     }
 
-    // Verificar acceso del admin_sociedad según tipo de competencia:
-    //   abierto / mundial → cualquier admin_sociedad puede inscribir
-    //   nacional          → solo admins cuya sociedad pertenece a la federacionId de la competencia
-    //   clasica           → solo el admin de la sociedad organizadora
-    if (req.user.role === "admin_sociedad") {
-      const tipo = competencia.tipoCompetencia;
-
-      if (tipo === "abierto" || tipo === "mundial") {
-        // acceso universal — no se necesita verificación adicional
-      } else if (tipo === "clasica") {
-        if (competencia.sociedadId?.toString() !== req.user.sociedadId?.toString()) {
-          return res.status(403).json({ error: "Sin acceso a esta competencia" });
-        }
-      } else if (tipo === "nacional") {
-        const fedId = competencia.federacionId?._id ?? competencia.federacionId;
-        if (!fedId) {
-          return res.status(403).json({ error: "Competencia nacional sin federación asignada" });
-        }
-        const [fedDoc, socUser] = await Promise.all([
-          Federacion.findById(fedId).select("codigo").lean(),
-          Sociedad.findById(req.user.sociedadId).select("federacion").lean()
-        ]);
-        const codFed  = fedDoc?.codigo?.trim().toUpperCase();
-        const codSoc  = socUser?.federacion?.trim().toUpperCase();
-        if (!(codFed && codFed === codSoc)) {
-          return res.status(403).json({
-            error: "Sin acceso a esta competencia: no pertenece a la federación organizadora"
-          });
-        }
-      } else {
-        return res.status(403).json({ error: "Sin acceso a esta competencia" });
-      }
+    // Acceso del admin_sociedad: propia sociedad o competencias de su federación
+    if (req.user.role === "admin_sociedad" && !(await puedeAcceder(competencia, req.user))) {
+      return res.status(403).json({ error: "Sin acceso a esta competencia" });
     }
     const esAccesoUniversal = ["abierto", "mundial"].includes(competencia.tipoCompetencia);
 
@@ -495,6 +469,8 @@ exports.update = async (req, res, next) => {
     const inscripcion = await Inscripcion.findById(req.params.id);
     if (!inscripcion)
       return res.status(404).json({ error: "Inscripción no encontrada" });
+    const competencia = await Competencia.findById(inscripcion.competenciaId);
+    await composicion.verificarGestion(competencia, inscripcion.socioId, req.user);
 
     if (codigoNomenclador && tipoNomenclador) {
       const nomen = await getNomenclador(tipoNomenclador, codigoNomenclador);
@@ -506,6 +482,13 @@ exports.update = async (req, res, next) => {
       inscripcion.codigoNomenclador = codigoNomenclador.toUpperCase();
       inscripcion.nombreNomenclador = nomen.nombreLinea;
       inscripcion.lote = codigoNomenclador.toUpperCase();
+      // Un dúo/cuarteto comparte lote: el cambio se aplica a todo el grupo
+      if (inscripcion.grupoPresentacion) {
+        await Inscripcion.updateMany(
+          { competenciaId: inscripcion.competenciaId, grupoPresentacion: inscripcion.grupoPresentacion, _id: { $ne: inscripcion._id } },
+          { $set: { tipoNomenclador, codigoNomenclador: inscripcion.codigoNomenclador, nombreNomenclador: nomen.nombreLinea, lote: inscripcion.lote } }
+        );
+      }
     }
     if (numAnillo) inscripcion.numAnillo = numAnillo.toUpperCase();
     if (puntaje !== undefined) inscripcion.puntaje = puntaje;
@@ -519,12 +502,18 @@ exports.update = async (req, res, next) => {
   }
 };
 
+// DELETE /inscripciones/:id?resolucion=individual|individuales|eliminar
+// Respeta la integridad del dúo/cuarteto (ver composicion.service.quitarAve).
 exports.remove = async (req, res, next) => {
   try {
-    const inscripcion = await Inscripcion.findByIdAndDelete(req.params.id);
+    const inscripcion = await Inscripcion.findById(req.params.id).lean();
     if (!inscripcion)
       return res.status(404).json({ error: "Inscripción no encontrada" });
-    res.json({ message: "Inscripción eliminada" });
+    const competencia = await Competencia.findById(inscripcion.competenciaId);
+    const r = await composicion.quitarAve({
+      inscripcion, competencia, resolucion: req.query.resolucion || req.body?.resolucion, user: req.user,
+    });
+    res.json({ message: "Inscripción eliminada", ...r });
   } catch (err) {
     next(err);
   }
@@ -538,9 +527,63 @@ exports.removeGrupo = async (req, res, next) => {
     const { competenciaId } = req.query;
     if (!competenciaId)
       return res.status(400).json({ error: "competenciaId requerido" });
+    const competencia = await Competencia.findById(competenciaId);
+    if (!competencia)
+      return res.status(404).json({ error: "Competencia no encontrada" });
 
-    const result = await Inscripcion.deleteMany({ grupoPresentacion, competenciaId });
-    res.json({ eliminadas: result.deletedCount });
+    res.json(await composicion.eliminarGrupo({ competencia, grupoPresentacion, user: req.user }));
+  } catch (err) {
+    next(err);
+  }
+};
+
+// GET /inscripciones/composicion?competenciaId=&socioId=
+exports.getComposicion = async (req, res, next) => {
+  try {
+    const { competenciaId, socioId } = req.query;
+    if (!competenciaId || !socioId)
+      return res.status(400).json({ error: "competenciaId y socioId son requeridos" });
+    const competencia = await Competencia.findById(competenciaId);
+    if (!competencia)
+      return res.status(404).json({ error: "Competencia no encontrada" });
+    await composicion.verificarGestion(competencia, socioId, req.user);
+    res.json(await composicion.composicionDeSocio(competencia._id, socioId));
+  } catch (err) {
+    next(err);
+  }
+};
+
+// POST /inscripciones/composicion  { competenciaId, socioId, grupos, eliminar }
+exports.recomponer = async (req, res, next) => {
+  try {
+    const { competenciaId, socioId, grupos, eliminar } = req.body;
+    const competencia = await Competencia.findById(competenciaId);
+    if (!competencia)
+      return res.status(404).json({ error: "Competencia no encontrada" });
+    res.json(await composicion.recomponer({ competencia, socioId, grupos, eliminar, user: req.user }));
+  } catch (err) {
+    next(err);
+  }
+};
+
+// GET /inscripciones/composicion/auditoria?competenciaId=
+exports.getAuditoria = async (req, res, next) => {
+  try {
+    const competencia = await Competencia.findById(req.query.competenciaId);
+    if (!competencia)
+      return res.status(404).json({ error: "Competencia no encontrada" });
+    const filtro = { competenciaId: competencia._id };
+    // El admin participante solo ve los cambios hechos por su sociedad
+    if (req.user.role === "admin_sociedad" &&
+        competencia.sociedadId?.toString() !== req.user.sociedadId?.toString()) {
+      filtro.sociedadId = req.user.sociedadId;
+    }
+    const registros = await AuditoriaComposicion.find(filtro)
+      .populate("socioId", "nombre apellido anilloCriador")
+      .sort({ fecha: -1 })
+      .limit(500)
+      .lean();
+    res.json(registros);
   } catch (err) {
     next(err);
   }

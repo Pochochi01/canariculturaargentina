@@ -62,8 +62,8 @@
     "competencias-eliminar-competencia",
     "competencias-finalizar-competencia",
     "competencias-reabrir-competencia",
+    "competencias-abierta-cierre-la-inscripcion-para-poder-finalizar-finalizar-competencia",
     "competencias-editar-calificacion-anillo",
-    "competencias-eliminar-inscripcion",
-    "competencias-cerrar-inscripcion"
+    "competencias-eliminar-inscripcion"
   ]
 }

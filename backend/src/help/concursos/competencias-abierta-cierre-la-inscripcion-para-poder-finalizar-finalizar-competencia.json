@@ -1,0 +1,61 @@
+{
+  "id": "competencias-abierta-cierre-la-inscripcion-para-poder-finalizar-finalizar-competencia",
+  "titulo": "Cómo usar «abierta / Cierre la inscripción para poder finalizar / Finalizar competencia»",
+  "descripcion": "Realizar la operación «abierta / Cierre la inscripción para poder finalizar / Finalizar competencia» desde la pantalla «Competencias».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "accion",
+  "rutas": [
+    "/competencias"
+  ],
+  "enlaces": [
+    {
+      "ruta": "/competencias",
+      "roles": [
+        "admin_general",
+        "admin_sociedad"
+      ]
+    }
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "POST /api/competencias/:id/cerrar-inscripcion"
+  ],
+  "keywords": [
+    "abierta",
+    "cierre",
+    "inscripcion",
+    "poder",
+    "finalizar",
+    "competencia",
+    "competencias"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias».",
+    "Presione el botón «abierta / Cierre la inscripción para poder finalizar / Finalizar competencia»."
+  ],
+  "erroresFrecuentes": [
+    "Competencia no encontrada",
+    "No tiene permisos para realizar esta acción",
+    "La competencia ya fue juzgada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente.",
+    "Su rol no permite esta operación. Si cree que debería tenerla, solicítela al Administrador General."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo",
+    "competencias-eliminar-inscripcion"
+  ]
+}

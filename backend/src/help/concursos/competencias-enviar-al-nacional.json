@@ -1,0 +1,56 @@
+{
+  "id": "competencias-enviar-al-nacional",
+  "titulo": "Cómo usar «Enviar al Nacional»",
+  "descripcion": "Realizar la operación «Enviar al Nacional» desde la pantalla «Aves al Nacional».",
+  "categoria": "concursos",
+  "modulo": "competencias",
+  "tipo": "accion",
+  "rutas": [
+    "/competencias/:id/aves-nacional"
+  ],
+  "enlaces": [
+    {
+      "ruta": "/competencias",
+      "roles": [
+        "admin_general",
+        "admin_sociedad"
+      ]
+    }
+  ],
+  "rolesPermitidos": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "rolesEjecucion": [
+    "admin_general",
+    "admin_sociedad"
+  ],
+  "permisos": [
+    "POST /api/competencias/:id/aves-nacional"
+  ],
+  "keywords": [
+    "enviar",
+    "nacional",
+    "competencia",
+    "competencias"
+  ],
+  "pasos": [
+    "Ingrese desde el menú lateral a «Gestión › Competencias» y abra la opción correspondiente.",
+    "Presione el botón «Enviar al Nacional».",
+    "Confirme la operación en el aviso «¿Enviar al Nacional?»."
+  ],
+  "erroresFrecuentes": [
+    "Competencia no encontrada"
+  ],
+  "soluciones": [
+    "El registro pudo haber sido eliminado por otro usuario. Recargue la pantalla e intente nuevamente."
+  ],
+  "relacionados": [
+    "competencias-eliminar-competencia",
+    "competencias-finalizar-competencia",
+    "competencias-reabrir-competencia",
+    "competencias-abierta-cierre-la-inscripcion-para-poder-finalizar-finalizar-competencia",
+    "competencias-nuevo-competencia",
+    "competencias-editar-calificacion-anillo"
+  ]
+}

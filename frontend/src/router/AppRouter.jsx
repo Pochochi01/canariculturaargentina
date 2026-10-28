@@ -17,6 +17,7 @@ import CompetenciaListPage from '@/pages/competencias/CompetenciaListPage';
 import CompetenciaFormPage from '@/pages/competencias/CompetenciaFormPage';
 import CompetenciaDetailPage from '@/pages/competencias/CompetenciaDetailPage';
 import MesasPage from '@/pages/competencias/MesasPage';
+import AvesNacionalPage from '@/pages/competencias/AvesNacionalPage';
 import JuraPage from '@/pages/competencias/JuraPage';
 import InscripcionFormPage from '@/pages/inscripciones/InscripcionFormPage';
 import HistoricoPage from '@/pages/historico/HistoricoPage';
@@ -160,6 +161,10 @@ const router = createBrowserRouter([
       {
         path: 'competencias/:id/editar',
         element: <ProtectedRoute allowedRoles={['admin_general', 'admin_sociedad']}><CompetenciaFormPage /></ProtectedRoute>
+      },
+      {
+        path: 'competencias/:id/aves-nacional',
+        element: <ProtectedRoute allowedRoles={['admin_general', 'admin_sociedad']}><AvesNacionalPage /></ProtectedRoute>
       },
       {
         path: 'competencias/:id/mesas',

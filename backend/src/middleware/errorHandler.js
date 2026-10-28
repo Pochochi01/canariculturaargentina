@@ -1,4 +1,11 @@
+const { ErrorNegocio } = require('../services/composicion.service');
+
 const errorHandler = (err, req, res, next) => {
+  // Reglas de negocio: respuesta controlada, sin stack en el log
+  if (err instanceof ErrorNegocio) {
+    return res.status(err.status).json({ error: err.message, ...err.extra });
+  }
+
   console.error(err.stack);
 
   if (err.name === 'ValidationError') {

@@ -10,6 +10,8 @@ import { getLotesJurados } from '@/api/mesa.api';
 import { descargarRevista } from '@/api/publicidad.api';
 import PageHeader from '@/components/shared/PageHeader';
 import ConfirmDialog from '@/components/shared/ConfirmDialog';
+import ComposicionEditor from '@/components/competencias/ComposicionEditor';
+import ResolucionDialog from '@/components/competencias/ResolucionDialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -21,7 +23,7 @@ import {
 } from '@/components/ui/table';
 import {
   Plus, Pencil, Trash2, FileText, Download, Loader2,
-  ChevronDown, ChevronRight, Lock, Search, BookOpen, ClipboardList
+  ChevronDown, ChevronRight, Lock, Search, BookOpen, ClipboardList, Layers, Send
 } from 'lucide-react';
 
 // AND search: todos los términos deben estar presentes en cualquier orden
@@ -40,7 +42,7 @@ const TIPO_LABELS = {
   clasica: 'Clásica', abierto: 'Abierto', nacional: 'Nacional', mundial: 'Mundial'
 };
 
-function LoteSection({ lote, onEdit, onDelete, estadoInscripcion, soloLectura, restringirPuntaje = false, lotesJurados = new Set() }) {
+function LoteSection({ lote, onEdit, onDelete, onComposicion, estadoInscripcion, soloLectura, restringirPuntaje = false, lotesJurados = new Set() }) {
   const [expanded, setExpanded] = useState(true);
   const cerrada = estadoInscripcion !== 'abierta';
 
@@ -116,6 +118,11 @@ function LoteSection({ lote, onEdit, onDelete, estadoInscripcion, soloLectura, r
                   {!soloLectura && (
                     <TableCell>
                       <div className="flex gap-1 justify-end">
+                        {onComposicion && (
+                          <Button variant="ghost" size="icon" title="Editar composición del socio" onClick={() => onComposicion(item)}>
+                            <Layers className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
                         <Button variant="ghost" size="icon" onClick={() => onEdit(item)}>
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
@@ -200,6 +207,8 @@ export default function CompetenciaDetailPage() {
   const [busqLote, setBusqLote] = useState('');
   const [busqCriador, setBusqCriador] = useState('');
   const [busqAnillo, setBusqAnillo] = useState('');
+  const [socioComposicion, setSocioComposicion] = useState(null);
+  const [conflicto, setConflicto] = useState(null); // dúo/cuarteto incompleto al quitar un ave
 
   const { data: competencia, isLoading: loadingComp } = useQuery({
     queryKey: ['competencia', id],
@@ -222,8 +231,18 @@ export default function CompetenciaDetailPage() {
   const lotesJurados = new Set(lotesJuradosData?.lotesJurados || []);
 
   const deleteMutation = useMutation({
-    mutationFn: deleteInscripcion,
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['inscripciones'] }); setDeleteId(null); }
+    mutationFn: ({ inscId, resolucion }) => deleteInscripcion(inscId, resolucion),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['inscripciones'] });
+      setDeleteId(null);
+      setConflicto(null);
+    },
+    onError: (e, { inscId }) => {
+      setDeleteId(null);
+      const data = e.response?.data;
+      // Quitar el ave deja un dúo/cuarteto incompleto: el usuario elige cómo seguir
+      if (data?.codigo === 'REQUIERE_RESOLUCION') setConflicto({ ...data, inscId });
+    }
   });
 
   const updateMutation = useMutation({
@@ -308,7 +327,11 @@ export default function CompetenciaDetailPage() {
   const esParticipante = !esSocio && !esOrganizador &&
     user?.role === 'admin_sociedad' &&
     (competencia?.tipoCompetencia === 'nacional' ||
-     competencia?.tipoCompetencia === 'mundial');
+     competencia?.tipoCompetencia === 'mundial' ||
+     competencia?.tipoCompetencia === 'abierto');
+  const esClasica = competencia?.tipoCompetencia === 'clasica';
+  const puedeComponer = esOrganizador && esClasica && estaAbierta;
+  const finalizada = competencia?.estadoCompetencia === 'finalizada';
 
   if (loadingComp) return <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>;
   if (!competencia) return <div className="text-center py-12 text-muted-foreground">Competencia no encontrada</div>;
@@ -328,6 +351,11 @@ export default function CompetenciaDetailPage() {
             {esOrganizador && (
               <Button variant="outline" onClick={() => navigate(`/competencias/${id}/mesas`)}>
                 Mesas
+              </Button>
+            )}
+            {esOrganizador && esClasica && finalizada && (
+              <Button className="bg-green-700 hover:bg-green-800" onClick={() => navigate(`/competencias/${id}/aves-nacional`)}>
+                <Send className="h-4 w-4 mr-1" /> Aves al Nacional
               </Button>
             )}
             {esOrganizador && estaAbierta && (
@@ -582,6 +610,7 @@ export default function CompetenciaDetailPage() {
               estadoInscripcion={competencia.estadoInscripcion}
               onEdit={setEditItem}
               onDelete={setDeleteId}
+              onComposicion={puedeComponer ? (item) => setSocioComposicion({ _id: item.socioId?._id ?? item.socioId, label: item.numCriador }) : null}
               soloLectura={esSocio || esParticipante}
               restringirPuntaje={restringirPuntaje}
               lotesJurados={lotesJurados}
@@ -593,7 +622,7 @@ export default function CompetenciaDetailPage() {
       <ConfirmDialog
         open={!!deleteId} onOpenChange={() => setDeleteId(null)}
         title="¿Eliminar inscripción?" description="Esta acción no se puede deshacer."
-        onConfirm={() => deleteMutation.mutate(deleteId)} loading={deleteMutation.isPending}
+        onConfirm={() => deleteMutation.mutate({ inscId: deleteId })} loading={deleteMutation.isPending}
       />
 
       <ConfirmDialog
@@ -603,6 +632,26 @@ export default function CompetenciaDetailPage() {
         onConfirm={() => cerrarMutation.mutate()}
         loading={cerrarMutation.isPending}
       />
+
+      {deleteMutation.error && !conflicto && (
+        <p role="alert" className="text-sm text-red-600">{deleteMutation.error.response?.data?.error}</p>
+      )}
+
+      <ResolucionDialog
+        conflicto={conflicto}
+        loading={deleteMutation.isPending}
+        onCancelar={() => setConflicto(null)}
+        onElegir={(resolucion) => deleteMutation.mutate({ inscId: conflicto.inscId, resolucion })}
+      />
+
+      {socioComposicion && (
+        <ComposicionEditor
+          open={!!socioComposicion}
+          onClose={() => setSocioComposicion(null)}
+          competenciaId={id}
+          socio={socioComposicion}
+        />
+      )}
 
       {editItem && (
         <EditInscripcionModal

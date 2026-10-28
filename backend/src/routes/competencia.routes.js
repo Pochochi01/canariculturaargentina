@@ -16,6 +16,8 @@ router.put('/:id', authorize('admin_general', 'admin_sociedad'), ctrl.update);
 router.delete('/:id', authorize('admin_general', 'admin_sociedad'), ctrl.remove);
 router.post('/:id/cerrar-inscripcion', authorize('admin_general', 'admin_sociedad'), ctrl.cerrarInscripcion);
 router.put('/:id/finalizar', authorize('admin_general', 'admin_sociedad'), ctrl.finalizarCompetencia);
+router.get('/:id/aves-nacional',  authorize('admin_general', 'admin_sociedad'), ctrl.getAvesNacional);
+router.post('/:id/aves-nacional', authorize('admin_general', 'admin_sociedad'), ctrl.enviarAvesNacional);
 router.put('/:id/reabrir',   authorize('admin_general', 'admin_sociedad'), ctrl.reabrirCompetencia);
 
 module.exports = router;
