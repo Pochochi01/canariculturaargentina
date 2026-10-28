@@ -8,6 +8,14 @@
   "rutas": [
     "/jueces/nuevo"
   ],
+  "enlaces": [
+    {
+      "ruta": "/jueces/nuevo",
+      "roles": [
+        "admin_general"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general"
   ],

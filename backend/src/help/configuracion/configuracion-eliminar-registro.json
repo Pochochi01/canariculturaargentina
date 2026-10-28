@@ -8,6 +8,14 @@
   "rutas": [
     "/admin/dropdowns"
   ],
+  "enlaces": [
+    {
+      "ruta": "/admin/dropdowns",
+      "roles": [
+        "admin_general"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general"
   ],

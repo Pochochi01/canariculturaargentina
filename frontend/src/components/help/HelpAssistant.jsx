@@ -80,7 +80,7 @@ export default function HelpAssistant() {
                   <div className="max-w-[95%] space-y-2 rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-sm text-foreground">
                     {m.texto && <p>{m.texto}</p>}
                     {m.tipo === 'articulo' && (
-                      <HelpArticle articulo={m.articulo} porId={help.porId} onOpen={abrirArticulo} compact />
+                      <HelpArticle articulo={m.articulo} porId={help.porId} onOpen={abrirArticulo} onNavigate={() => setAbierto(false)} compact />
                     )}
                     {m.tipo === 'opciones' && (
                       <div className="flex flex-col gap-1.5">

@@ -10,6 +10,26 @@
     "/nomencladores/formas",
     "/nomencladores/canto"
   ],
+  "enlaces": [
+    {
+      "ruta": "/nomencladores/colores",
+      "roles": [
+        "admin_general"
+      ]
+    },
+    {
+      "ruta": "/nomencladores/formas",
+      "roles": [
+        "admin_general"
+      ]
+    },
+    {
+      "ruta": "/nomencladores/canto",
+      "roles": [
+        "admin_general"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general"
   ],

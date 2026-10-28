@@ -8,6 +8,15 @@
   "rutas": [
     "/socios"
   ],
+  "enlaces": [
+    {
+      "ruta": "/socios",
+      "roles": [
+        "admin_general",
+        "admin_sociedad"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general",
     "admin_sociedad"

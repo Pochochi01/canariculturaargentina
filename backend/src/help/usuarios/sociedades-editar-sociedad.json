@@ -8,6 +8,14 @@
   "rutas": [
     "/sociedades/:id/editar"
   ],
+  "enlaces": [
+    {
+      "ruta": "/sociedades",
+      "roles": [
+        "admin_general"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general"
   ],

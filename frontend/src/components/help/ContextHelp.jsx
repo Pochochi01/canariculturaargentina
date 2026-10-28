@@ -46,7 +46,7 @@ export default function ContextHelp() {
               >
                 <ArrowLeft className="h-4 w-4" /> Volver
               </button>
-              <HelpArticle articulo={articulo} roles={help.roles} porId={help.porId} onOpen={setArticuloId} />
+              <HelpArticle articulo={articulo} roles={help.roles} porId={help.porId} onOpen={setArticuloId} onNavigate={() => cerrar(false)} />
             </div>
           ) : delModulo.length === 0 ? (
             <p className="text-sm text-muted-foreground">No hay guías específicas para esta pantalla.</p>

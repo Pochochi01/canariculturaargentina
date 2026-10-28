@@ -8,6 +8,14 @@
   "rutas": [
     "/mi-criadero"
   ],
+  "enlaces": [
+    {
+      "ruta": "/mi-criadero",
+      "roles": [
+        "socio"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "socio"
   ],

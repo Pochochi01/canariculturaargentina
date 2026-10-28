@@ -9,6 +9,22 @@
     "/competencias/nueva",
     "/competencias/:competenciaId/inscripciones/nueva"
   ],
+  "enlaces": [
+    {
+      "ruta": "/competencias/nueva",
+      "roles": [
+        "admin_general",
+        "admin_sociedad"
+      ]
+    },
+    {
+      "ruta": "/competencias",
+      "roles": [
+        "admin_general",
+        "admin_sociedad"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general",
     "admin_sociedad"

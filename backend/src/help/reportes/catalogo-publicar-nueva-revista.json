@@ -8,6 +8,17 @@
   "rutas": [
     "/catalogo-digital"
   ],
+  "enlaces": [
+    {
+      "ruta": "/catalogo-digital",
+      "roles": [
+        "admin_general",
+        "admin_sociedad",
+        "socio",
+        "operador"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general",
     "admin_sociedad",

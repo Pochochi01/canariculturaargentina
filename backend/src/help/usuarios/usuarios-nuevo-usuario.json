@@ -8,6 +8,14 @@
   "rutas": [
     "/admin/usuarios"
   ],
+  "enlaces": [
+    {
+      "ruta": "/admin/usuarios",
+      "roles": [
+        "admin_general"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general"
   ],

@@ -8,6 +8,15 @@
   "rutas": [
     "/competencias/:id/mesas"
   ],
+  "enlaces": [
+    {
+      "ruta": "/competencias",
+      "roles": [
+        "admin_general",
+        "admin_sociedad"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general",
     "admin_sociedad"

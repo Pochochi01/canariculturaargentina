@@ -8,6 +8,15 @@
   "rutas": [
     "/gestion"
   ],
+  "enlaces": [
+    {
+      "ruta": "/gestion",
+      "roles": [
+        "admin_general",
+        "admin_sociedad"
+      ]
+    }
+  ],
   "rolesPermitidos": [
     "admin_general",
     "admin_sociedad"

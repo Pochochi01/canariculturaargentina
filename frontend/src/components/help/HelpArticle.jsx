@@ -1,9 +1,11 @@
+import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, CheckCircle2, ListOrdered, Link2, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ListOrdered, Link2, ShieldCheck, ExternalLink } from 'lucide-react';
 import { CATEGORIAS, MODULOS, TIPOS } from '@/lib/help/constants';
 
-// Detalle de un artículo. compact = versión reducida para el asistente
-export default function HelpArticle({ articulo, roles = {}, porId, onOpen, compact = false }) {
+// Detalle de un artículo. compact = versión reducida para el asistente.
+// onNavigate: se llama al seguir el enlace (p. ej. para cerrar el diálogo que lo contiene)
+export default function HelpArticle({ articulo, roles = {}, porId, onOpen, onNavigate, compact = false }) {
   if (!articulo) return null;
   const relacionados = (articulo.relacionados || []).map(id => porId?.get(id)).filter(Boolean);
 
@@ -18,6 +20,16 @@ export default function HelpArticle({ articulo, roles = {}, porId, onOpen, compa
             <Badge variant="outline">{MODULOS[articulo.modulo] || articulo.modulo}</Badge>
             {TIPOS[articulo.tipo] && <Badge variant="outline">{TIPOS[articulo.tipo]}</Badge>}
           </div>
+        )}
+        {articulo.enlace && (
+          <Link
+            to={articulo.enlace}
+            onClick={onNavigate}
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            Ir a la pantalla <code className="font-mono opacity-80">{articulo.enlace}</code>
+          </Link>
         )}
       </header>
 

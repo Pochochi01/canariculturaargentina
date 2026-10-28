@@ -8,6 +8,7 @@
   "rutas": [
     "/login"
   ],
+  "enlaces": [],
   "rolesPermitidos": [
     "admin_general",
     "admin_sociedad",

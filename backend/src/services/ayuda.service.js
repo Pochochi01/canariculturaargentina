@@ -25,10 +25,11 @@ exports.paraRol = (rol) => {
   const visibles = articulos
     .filter(a => puedeVer(a, rol))
     .map(a => {
+      // Solo el enlace a una pantalla que este rol puede abrir
+      const { enlaces = [], permisos, ...resto } = a;
+      const enlace = enlaces.find(e => e.roles.includes(rol))?.ruta || null;
       // Los endpoints internos solo se exponen al administrador general
-      if (rol === 'admin_general') return a;
-      const { permisos, ...resto } = a;
-      return resto;
+      return rol === 'admin_general' ? { ...resto, permisos, enlace } : { ...resto, enlace };
     });
   const ids = new Set(visibles.map(a => a.id));
   for (const a of visibles) a.relacionados = (a.relacionados || []).filter(id => ids.has(id));

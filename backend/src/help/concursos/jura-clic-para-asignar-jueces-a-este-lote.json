@@ -8,6 +8,7 @@
   "rutas": [
     "/mesas/:mesaId/jura"
   ],
+  "enlaces": [],
   "rolesPermitidos": [
     "admin_general",
     "admin_sociedad",

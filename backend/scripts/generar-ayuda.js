@@ -313,11 +313,22 @@ function generar() {
     return `Ingrese a la pantalla «${tituloPagina}».`;
   };
 
+  // Pantalla a la que lleva el artículo: la ruta misma o, si tiene parámetros
+  // (/sociedades/:id/editar), el listado padre (/sociedades). La sesión ya iniciada no necesita /login.
+  const enlaceDe = (ruta) => {
+    if (ruta.path === '/login') return null;
+    if (!ruta.path.includes(':')) return { ruta: ruta.path, roles: ruta.roles };
+    const padre = ruta.path.slice(0, ruta.path.indexOf('/:'));
+    const r = rutas.find(x => x.path === padre);
+    return r ? { ruta: r.path, roles: r.roles } : null;
+  };
+
   const agregar = (art) => {
     const previo = articulos.get(art.id);
     if (previo) {
       previo.rutas = uniq([...previo.rutas, ...art.rutas]);
       previo.rolesPermitidos = uniq([...previo.rolesPermitidos, ...art.rolesPermitidos]);
+      for (const e of art.enlaces) if (!previo.enlaces.some(x => x.ruta === e.ruta)) previo.enlaces.push(e);
       return;
     }
     articulos.set(art.id, art);
@@ -356,6 +367,7 @@ function generar() {
         modulo: base.modulo,
         tipo,
         rutas: [ruta.path],
+        enlaces: [enlaceDe(ruta)].filter(Boolean),
         rolesPermitidos: ruta.roles,
         rolesEjecucion,
         permisos: ep ? [`${ep.metodo} ${ep.ruta}`] : [],
